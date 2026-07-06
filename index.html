@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>후쿠오카 여행 · Toss Style</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: { toss:'#3182F6', bg:'#000000', card:'#1C1C1E', card2:'#2C2C2E' },
+      fontFamily: {
+        sans: ['Pretendard Variable','Pretendard','system-ui','sans-serif'],
+        jp: ['Noto Sans JP','sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+  :root{ --bg:#000; --card:#1C1C1E; --card2:#2C2C2E; --toss:#3182F6; --text:#F9F9F9; --sub:#8B8B90; --line:#2A2A2E; }
+  html,body{ background:#000; }
+  body{ font-family:'Pretendard Variable','Pretendard',system-ui,sans-serif; color:var(--text); -webkit-tap-highlight-color:transparent; letter-spacing:-0.01em; }
+  .jp{ font-family:'Noto Sans JP',sans-serif; }
+  .card{ background:var(--card); border-radius:1.25rem; }
+  .hide-scroll::-webkit-scrollbar{display:none}
+  .hide-scroll{-ms-overflow-style:none;scrollbar-width:none}
+  .tab-pane{ display:none }
+  .tab-pane.active{ display:block; animation:fade .28s ease }
+  @keyframes fade{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  .navbtn{ color:#6B6B70 }
+  .navbtn.active{ color:var(--toss) }
+  .navbtn.active .navicon{ transform:translateY(-1px) scale(1.06) }
+  input,button,select{ outline:none }
+  input::placeholder{ color:#5C5C62 }
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0 }
+  input[type=number]{ -moz-appearance:textfield }
+  .checked{ text-decoration:line-through; color:#5C5C62 !important }
+  .press{ transition:transform .12s ease }
+  .press:active{ transform:scale(0.97) }
+  .chip{ display:inline-flex; align-items:center; gap:.25rem; font-weight:700; font-size:.7rem; padding:.28rem .55rem; border-radius:.6rem; }
+  /* 모바일 타임라인 좌측 레일 (데스크톱에선 그리드로 전환) */
+  .rail{ border-left:2px solid var(--line); padding-left:1rem; }
+  @media (min-width:768px){ .rail{ border-left:0; padding-left:0; } }
+  /* 아코디언 (max-height 방식 — 어떤 렌더러에서도 확실히 접힘/펼침) */
+  .t-detail-wrap{ max-height:0; overflow:hidden; transition:max-height .32s ease; }
+  .transit.open > .t-detail-wrap{ max-height:1500px; }
+  .t-detail{ overflow:hidden; }
+  .transit .arrow{ transition:transform .3s ease; display:inline-block; }
+  .transit.open > button .arrow{ transform:rotate(180deg); }
+</style>
+</head>
+<body class="pb-28 mx-auto w-full max-w-md md:max-w-3xl relative min-h-screen">
+
+<!-- ===== Header ===== -->
+<header class="sticky top-0 z-40 bg-black/85 backdrop-blur-xl px-5 pt-6 pb-4">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-[1.7rem] font-extrabold leading-tight">후쿠오카 여행</h1>
+      <p class="text-[0.8rem] text-[color:var(--sub)] font-semibold mt-1">2026.07.07 → 07.11 · 4박 5일</p>
+    </div>
+    <div id="dayBadge" class="text-center bg-[color:var(--card)] rounded-2xl px-3.5 py-2 min-w-[68px]">
+      <div class="text-[0.6rem] text-[color:var(--sub)] font-bold leading-none">여행까지</div>
+      <div class="font-extrabold text-toss text-xl leading-tight mt-1">D-1</div>
+    </div>
+  </div>
+</header>
+
+<main class="px-4 mt-3">
+
+  <!-- ============ TAB 1 : 일정 & 길찾기 ============ -->
+  <section id="tab-route" class="tab-pane active space-y-4">
+    <div class="flex items-end justify-between px-1">
+      <h2 class="text-xl font-extrabold">일정 &amp; 길찾기</h2>
+      <span class="text-[0.72rem] text-[color:var(--sub)] font-semibold">탭하면 구글맵 길찾기</span>
+    </div>
+
+    <!-- 일차 선택 칩 -->
+    <div id="dayChips" class="flex gap-2 overflow-x-auto hide-scroll pb-1 -mx-1 px-1"></div>
+
+    <!-- 범례 -->
+    <div class="flex flex-wrap gap-1.5 text-[0.68rem] px-1">
+      <span class="chip bg-blue-500/15 text-blue-300">🚇 지하철</span>
+      <span class="chip bg-emerald-500/15 text-emerald-300">🚌 버스</span>
+      <span class="chip bg-zinc-600/40 text-zinc-300">🚶 도보</span>
+      <span class="chip bg-amber-500/15 text-amber-300">📍 하차역</span>
+    </div>
+
+    <div id="timeline"></div>
+  </section>
+
+  <!-- ============ TAB 2 : 통합 가계부 ============ -->
+  <section id="tab-money" class="tab-pane space-y-4">
+    <h2 class="text-xl font-extrabold px-1">통합 가계부</h2>
+
+    <div class="card p-6">
+      <div class="text-[0.8rem] text-[color:var(--sub)] font-semibold">현재까지 총 지출액</div>
+      <div id="total" class="text-[2.9rem] font-extrabold text-toss mt-1 leading-none tracking-tight">¥0</div>
+      <div id="totalKrw" class="text-[0.8rem] text-[color:var(--sub)] mt-2 font-medium">약 0원 · 100엔 ≈ 900원</div>
+    </div>
+
+    <div class="card p-4">
+      <div class="text-[0.8rem] text-[color:var(--sub)] font-bold px-1 mb-2">일자별 지출</div>
+      <div id="daySummary" class="grid grid-cols-1 md:grid-cols-2 md:gap-x-4"></div>
+    </div>
+
+    <div class="card p-4">
+      <div class="text-[0.8rem] text-[color:var(--sub)] font-bold px-1 mb-2.5">직접 추가</div>
+      <div class="flex gap-2">
+        <select id="mDay" class="bg-[color:var(--card2)] text-sm rounded-xl px-2.5 py-3 font-semibold text-[color:var(--text)]">
+          <option value="1">1일차</option><option value="2">2일차</option>
+          <option value="3">3일차</option><option value="4">4일차</option>
+          <option value="5">5일차</option><option value="0">기타</option>
+        </select>
+        <input id="mName" type="text" placeholder="내용 (예: 라멘)" class="flex-1 min-w-0 bg-[color:var(--card2)] rounded-xl px-3 py-3 text-sm">
+        <input id="mAmt" type="number" inputmode="numeric" pattern="[0-9]*" placeholder="¥" class="w-20 bg-[color:var(--card2)] rounded-xl px-3 py-3 text-sm text-right">
+      </div>
+      <button onclick="addManual()" class="press w-full mt-2 bg-toss text-white font-bold rounded-xl py-3.5 text-[0.95rem]">＋ 기입하기</button>
+    </div>
+
+    <div id="expGroups" class="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0"></div>
+    <div id="expEmpty" class="text-center text-[color:var(--sub)] text-sm py-10 card leading-relaxed">
+      아직 지출 내역이 없어요.<br>일정 탭의 각 장소 카드에서 바로 기입해보세요 💳
+    </div>
+    <button onclick="clearExpenses()" class="w-full text-xs text-[color:var(--sub)] py-3">전체 내역 삭제</button>
+  </section>
+
+  <!-- ============ TAB 3 : 준비/예약 ============ -->
+  <section id="tab-prep" class="tab-pane space-y-4">
+    <h2 class="text-xl font-extrabold px-1">준비 &amp; 예약</h2>
+
+    <!-- 🇯🇵 입국 준비 & Visit Japan Web (아코디언 · 기본 접힘) -->
+    <div class="transit card overflow-hidden">
+      <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-5 block">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="text-[1rem] font-extrabold">🇯🇵 입국 준비 &amp; Visit Japan Web</div>
+            <div class="text-[0.78rem] text-[color:var(--sub)] mt-1 leading-snug">VJW 등록 정보 · 공식 링크 · QR 캡처 <span class="text-toss font-bold">· 도착일(7/7)에 펼쳐 사용</span></div>
+          </div>
+          <span class="arrow text-[color:var(--sub)] text-sm mt-1 shrink-0">▼</span>
+        </div>
+      </button>
+      <div class="t-detail-wrap"><div class="t-detail">
+        <div class="px-5 pb-5">
+
+      <!-- VJW 등록용 정보 박스 -->
+      <div class="bg-[color:var(--card2)] rounded-xl p-3.5">
+        <div class="text-[0.72rem] font-bold text-toss mb-2.5">📋 VJW 등록용 정보 (복사해서 입력)</div>
+        <div class="space-y-2.5 text-[0.82rem]">
+          <div class="flex items-start justify-between gap-2">
+            <div><div class="text-[0.64rem] text-[color:var(--sub)] font-bold">입국 예정일</div><div class="font-semibold mt-0.5">2026.07.07 (화)</div></div>
+            <button onclick="copyText('2026.07.07', this)" class="press shrink-0 bg-[color:var(--card)] text-[color:var(--sub)] font-bold rounded-lg px-2.5 py-1.5 text-[0.72rem]">복사</button>
+          </div>
+          <div class="flex items-start justify-between gap-2 pt-2.5 border-t border-[color:var(--line)]">
+            <div class="min-w-0"><div class="text-[0.64rem] text-[color:var(--sub)] font-bold">숙소 주소</div><div class="font-semibold mt-0.5 leading-snug">3-14-28 Minoshima, Hakata Ward, Fukuoka 812-0017</div><div class="jp text-[0.7rem] text-[color:var(--sub)] mt-0.5">unito residence 美野島</div></div>
+            <button onclick="copyText('3-14-28 Minoshima, Hakata Ward, Fukuoka 812-0017', this)" class="press shrink-0 bg-[color:var(--card)] text-[color:var(--sub)] font-bold rounded-lg px-2.5 py-1.5 text-[0.72rem]">복사</button>
+          </div>
+          <div class="pt-2.5 border-t border-[color:var(--line)]">
+            <div class="text-[0.64rem] text-[color:var(--sub)] font-bold">숙소 전화번호</div>
+            <div class="font-semibold text-[color:var(--sub)] mt-0.5">바우처 참고 (추후 입력)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VJW 공식 사이트 버튼 -->
+      <a href="https://services.digital.go.jp/ko/visit-japan-web/" target="_blank" rel="noopener" class="press block text-center bg-toss text-white font-bold rounded-xl py-3 text-sm mt-3">🌐 Visit Japan Web 바로가기</a>
+
+      <!-- QR 캡처본 아코디언 -->
+      <div class="transit rounded-xl overflow-hidden mt-3" style="background:var(--card2)">
+        <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-3.5 block">
+          <div class="flex items-center justify-between gap-2">
+            <div class="font-bold text-[0.9rem]">📷 내 VJW QR 캡처본 보기</div>
+            <span class="arrow text-[color:var(--sub)] text-sm shrink-0">▼</span>
+          </div>
+        </button>
+        <div class="t-detail-wrap"><div class="t-detail">
+          <div class="px-3.5 pb-3.5">
+            <input type="file" accept="image/*" class="hidden" id="vjwUpload">
+            <!-- 이미지 없을 때: 첨부 버튼(점선 박스) -->
+            <label for="vjwUpload" id="vjwUploadBtn" class="press flex flex-col items-center justify-center gap-2 border-2 border-dashed border-[color:var(--line)] rounded-xl py-8 px-4 text-center cursor-pointer">
+              <span class="text-2xl">📷</span>
+              <span class="text-[0.85rem] font-bold text-[color:var(--text)]">QR 이미지 첨부하기</span>
+              <span class="text-[0.7rem] text-[color:var(--sub)] leading-relaxed">발급받은 Visit Japan Web QR을<br>갤러리/사진에서 선택하세요</span>
+            </label>
+            <!-- 이미지 있을 때: 미리보기 -->
+            <div id="vjwPreviewWrap" class="hidden">
+              <label for="vjwUpload" class="press block cursor-pointer">
+                <img id="vjwPreview" alt="VJW QR" class="w-full rounded-xl bg-white">
+              </label>
+              <div class="flex items-center justify-center gap-4 mt-2.5 text-[0.74rem]">
+                <label for="vjwUpload" class="press text-toss font-bold cursor-pointer">🔄 이미지 변경</label>
+                <button type="button" onclick="clearVjwQr()" class="press text-red-300 font-bold">🗑 삭제</button>
+              </div>
+            </div>
+          </div>
+        </div></div>
+      </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 📱 유심/eSIM 설정 가이드 (아코디언) -->
+    <div class="transit card overflow-hidden">
+      <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-4 block">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-extrabold text-[1rem]">📱 유심(USIM)/eSIM 설정 가이드</div>
+            <div class="text-[0.8rem] text-[color:var(--sub)] mt-1 leading-snug">구성품 · 지원기기 · 삼성/아이폰 사용법</div>
+          </div>
+          <span class="arrow text-[color:var(--sub)] text-sm mt-1 shrink-0">▼</span>
+        </div>
+      </button>
+      <div class="t-detail-wrap"><div class="t-detail">
+        <div class="px-4 pb-4 text-[0.85rem] leading-relaxed space-y-3">
+          <!-- eSIM 간단 안내 -->
+          <div class="bg-[color:var(--card2)] rounded-lg p-3">
+            <div class="font-bold text-toss text-[0.82rem] mb-1">📶 eSIM (가장 간편)</div>
+            <div class="text-[0.8rem] text-[color:var(--sub)]">출국 전 구매 → 받은 QR로 <b class="text-[color:var(--text)]">설정 › 셀룰러 › eSIM 추가</b>. 물리 유심 교체 없이 현지 자동 연결돼요.</div>
+          </div>
+
+          <div class="font-extrabold text-[0.9rem] pt-1">💳 물리 유심(USIM) 사용 가이드</div>
+
+          <!-- 구성품 -->
+          <div class="bg-[color:var(--card2)] rounded-lg p-3">
+            <div class="font-bold text-[0.82rem] mb-1">📦 USIM 구성품</div>
+            <div class="text-[0.8rem]"><b class="text-toss">유심카드 · 유심핀 · 사용 설명서</b>로 구성돼 있어요.</div>
+          </div>
+
+          <!-- 지원기기 -->
+          <div class="bg-[color:var(--card2)] rounded-lg p-3">
+            <div class="font-bold text-[0.82rem] mb-1.5">📱 지원 기기 확인</div>
+            <div class="text-[0.8rem] space-y-1.5">
+              <div class="flex gap-1.5"><span class="text-emerald-300 font-bold shrink-0">✔ 가능</span><span>컨트리락 해지된 <b>2015년 이후</b> 출시 스마트폰</span></div>
+              <div class="flex gap-1.5"><span class="text-red-300 font-bold shrink-0">✘ 불가</span><span>2014년 이전 출시 기종 · 갤럭시 A3/J1/J2/J3 · LG X/V10 · 루나폰/팬택/소니/블랙베리 전 기종</span></div>
+            </div>
+          </div>
+
+          <!-- 사용 방법: 삼성/아이폰 토글 -->
+          <div>
+            <div class="font-bold text-[0.82rem] mb-2">🔧 사용 방법 (기기별 순서)</div>
+            <div class="flex gap-1.5 mb-2.5">
+              <button type="button" onclick="usimTab('samsung',this)" data-usim="samsung" class="usim-tab press flex-1 rounded-lg py-2 text-[0.8rem] font-bold bg-toss text-white">📱 삼성 갤럭시</button>
+              <button type="button" onclick="usimTab('iphone',this)" data-usim="iphone" class="usim-tab press flex-1 rounded-lg py-2 text-[0.8rem] font-bold bg-[color:var(--card2)] text-[color:var(--sub)]">🍎 아이폰</button>
+            </div>
+            <ol id="usim-samsung" class="space-y-1.5 text-[0.8rem]">
+              <li><b class="text-toss">1.</b> 전원 끄기 → 유심핀으로 <b>측면 유심 트레이</b> 분리</li>
+              <li><b class="text-toss">2.</b> 기존 유심 빼고 <b>해외 유심으로 교체</b> (금색 칩 방향 주의)</li>
+              <li><b class="text-toss">3.</b> 트레이 재삽입 후 전원 ON</li>
+              <li><b class="text-toss">4.</b> <b>설정 › 연결 › 모바일 네트워크 › 데이터 로밍 ON</b></li>
+              <li><b class="text-toss">5.</b> APN 자동 설정 대기 (안 되면 설명서의 APN 수동 입력)</li>
+              <li><b class="text-toss">6.</b> 데이터 연결 확인 → 완료 ✅</li>
+            </ol>
+            <ol id="usim-iphone" class="space-y-1.5 text-[0.8rem] hidden">
+              <li><b class="text-toss">1.</b> 전원 끄기 → 유심핀으로 <b>우측면 유심 트레이</b> 분리</li>
+              <li><b class="text-toss">2.</b> 기존 유심 빼고 <b>해외 유심으로 교체</b></li>
+              <li><b class="text-toss">3.</b> 트레이 재삽입 후 전원 ON</li>
+              <li><b class="text-toss">4.</b> <b>설정 › 셀룰러 › 셀룰러 데이터 옵션 › 데이터 로밍 ON</b></li>
+              <li><b class="text-toss">5.</b> APN은 대개 자동 · 설정 › 셀룰러 › 셀룰러 데이터 네트워크에서 확인</li>
+              <li><b class="text-toss">6.</b> 데이터 연결 확인 → 완료 ✅</li>
+            </ol>
+          </div>
+
+          <!-- 경고 + 안내 -->
+          <div class="bg-red-500/10 rounded-lg p-3 text-red-200 text-[0.8rem] leading-relaxed">🚨 교체 전 <b>기존 유심 분실 주의</b> · 도착 후 <b>데이터 로밍 ON</b> 필수 · eSIM은 회선 선택도 체크</div>
+          <div class="text-[0.76rem] text-[color:var(--sub)]">※ 이용에 어려움이 있으면 24시간 운영하는 <b>유심사 고객센터</b>로 문의하세요.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ✈️ 공항 생존 가이드 (아코디언) -->
+    <div class="space-y-2">
+      <h3 class="text-[0.98rem] font-extrabold px-1 pt-1">✈️ 공항 생존 가이드</h3>
+
+      <!-- 1. 환전 -->
+      <div class="transit card overflow-hidden" style="border-left:3px solid #3182F6">
+        <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-4 block">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex-1 min-w-0">
+              <div class="font-extrabold text-[0.95rem]">💴 수수료 무료 환전</div>
+              <div class="text-[0.78rem] text-toss font-bold mt-0.5">트래블로그 · 트래블월렛</div>
+            </div>
+            <span class="arrow text-[color:var(--sub)] text-sm shrink-0">▼</span>
+          </div>
+        </button>
+        <div class="t-detail-wrap"><div class="t-detail">
+          <div class="px-4 pb-4 text-[0.8rem] leading-relaxed">
+            <div><span class="text-[color:var(--sub)]">📍 위치 · </span>국제선 터미널 <b>1층 도착층</b> 세븐뱅크(Seven Bank) ATM</div>
+            <div class="mt-2 bg-toss/10 text-blue-200 rounded-lg p-2.5 text-[0.76rem] leading-relaxed">💡 입국심사 후 수하물 찾고 나오면 1층에 바로 보여요.</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- 2. IC카드 발급 -->
+      <div class="transit card overflow-hidden" style="border-left:3px solid #EF7C1B">
+        <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-4 block">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex-1 min-w-0">
+              <div class="font-extrabold text-[0.95rem]">💳 교통카드(IC카드) 발급</div>
+              <div class="text-[0.78rem] text-orange-300 font-bold mt-0.5">하야카켄 등 IC카드 · 국내선 지하 2층</div>
+            </div>
+            <span class="arrow text-[color:var(--sub)] text-sm shrink-0">▼</span>
+          </div>
+        </button>
+        <div class="t-detail-wrap"><div class="t-detail">
+          <div class="px-4 pb-4 text-[0.8rem] leading-relaxed">
+            <div><span class="text-[color:var(--sub)]">📍 위치 · </span><b>국내선 터미널 지하 2층</b> (지하철 후쿠오카공항역 매표소)</div>
+            <div class="mt-2 bg-red-500/10 text-red-200 rounded-lg p-2.5 text-[0.76rem] leading-relaxed">🚨 국제선 터미널엔 지하철이 없어요! <b>1층 외부 1번 승강장</b>에서 <b>무료 셔틀버스</b>를 타고 국내선 터미널로 약 15분 이동 → 지하 2층으로 내려가기.</div>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- 3. IC카드 반납 -->
+      <div class="transit card overflow-hidden" style="border-left:3px solid #12B981">
+        <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-4 block">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex-1 min-w-0">
+              <div class="font-extrabold text-[0.95rem]">🔙 교통카드 반납 · 환불</div>
+              <div class="text-[0.78rem] text-emerald-300 font-bold mt-0.5">출국일 전 미리 · 보증금 500엔 환불</div>
+            </div>
+            <span class="arrow text-[color:var(--sub)] text-sm shrink-0">▼</span>
+          </div>
+        </button>
+        <div class="t-detail-wrap"><div class="t-detail">
+          <div class="px-4 pb-4 text-[0.8rem] leading-relaxed">
+            <div><span class="text-[color:var(--sub)]">📍 반납 · </span>하카타역 · 텐진역 · 공항 국내선 지하 2층 등 <b>지하철역 안내창구</b></div>
+            <div class="mt-2 bg-red-500/10 text-red-200 rounded-lg p-2.5 text-[0.76rem] leading-relaxed">🚨 출국하는 날 <b>국제선 터미널에선 반납 불가!</b> 반드시 출국 전 지하철역에서 반납하세요.</div>
+            <div class="mt-2 bg-toss/10 text-blue-200 rounded-lg p-2.5 text-[0.76rem] leading-relaxed">💡 잔액이 남으면 수수료 <b>220엔</b> 차감. 편의점에서 잔액을 <b>0원으로 다 쓰고</b> 반납하면 보증금 <b>500엔 전액 환불</b>!</div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="md:grid md:grid-cols-2 md:gap-4 space-y-4 md:space-y-0">
+      <!-- 가는편 -->
+      <div class="card p-5">
+        <div class="flex items-center justify-between mb-4">
+          <span class="chip bg-blue-500/15 text-blue-300">가는편 · 7/7(화)</span>
+          <span class="text-[0.78rem] text-[color:var(--sub)] font-semibold">14:50 → 16:00</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <div><div class="text-[color:var(--sub)] text-[0.72rem] font-semibold">김해 KHH</div><div class="text-2xl font-extrabold mt-0.5">14:50</div></div>
+          <div class="flex-1 flex flex-col items-center px-3">
+            <div class="text-[0.68rem] text-[color:var(--sub)]">1시간 10분</div>
+            <div class="w-full flex items-center gap-1 my-1"><div class="h-px flex-1 bg-[color:var(--line)]"></div><span class="text-toss">✈</span><div class="h-px flex-1 bg-[color:var(--line)]"></div></div>
+            <div class="text-[0.68rem] text-[color:var(--sub)]">직항</div>
+          </div>
+          <div class="text-right"><div class="text-[color:var(--sub)] text-[0.72rem] font-semibold">후쿠오카 FUK</div><div class="text-2xl font-extrabold mt-0.5">16:00</div></div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-[color:var(--line)] flex items-center justify-between">
+          <div><div class="text-[0.9rem] font-bold">ZE943 <span class="text-[color:var(--sub)] font-medium text-sm">이스타항공</span></div><div class="text-sm mt-0.5">예약번호 <b class="text-toss tracking-widest">D3IR8S</b></div></div>
+          <button onclick="copyText('D3IR8S', this)" class="press shrink-0 bg-[color:var(--card2)] text-[color:var(--text)] font-bold rounded-xl px-4 py-2.5 text-sm">복사</button>
+        </div>
+      </div>
+
+      <!-- 오는편 -->
+      <div class="card p-5">
+        <div class="flex items-center justify-between mb-4">
+          <span class="chip bg-emerald-500/15 text-emerald-300">오는편 · 7/11(토)</span>
+          <span class="text-[0.78rem] text-[color:var(--sub)] font-semibold">11:05 → 12:00</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <div><div class="text-[color:var(--sub)] text-[0.72rem] font-semibold">후쿠오카 FUK</div><div class="text-2xl font-extrabold mt-0.5">11:05</div></div>
+          <div class="flex-1 flex flex-col items-center px-3">
+            <div class="text-[0.68rem] text-[color:var(--sub)]">55분</div>
+            <div class="w-full flex items-center gap-1 my-1"><div class="h-px flex-1 bg-[color:var(--line)]"></div><span class="text-toss">✈</span><div class="h-px flex-1 bg-[color:var(--line)]"></div></div>
+            <div class="text-[0.68rem] text-[color:var(--sub)]">직항</div>
+          </div>
+          <div class="text-right"><div class="text-[color:var(--sub)] text-[0.72rem] font-semibold">김해 KHH</div><div class="text-2xl font-extrabold mt-0.5">12:00</div></div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-[color:var(--line)] flex items-center justify-between">
+          <div><div class="text-[0.9rem] font-bold">TW232 <span class="text-[color:var(--sub)] font-medium text-sm">티웨이항공</span></div><div class="text-sm mt-0.5">예약번호 <b class="text-toss tracking-widest">Y35CGF</b></div></div>
+          <button onclick="copyText('Y35CGF', this)" class="press shrink-0 bg-[color:var(--card2)] text-[color:var(--text)] font-bold rounded-xl px-4 py-2.5 text-sm">복사</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 숙소 -->
+    <div class="card p-5">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="chip bg-toss/15 text-toss">숙소 · 4박</span>
+        <span class="text-[0.72rem] text-[color:var(--sub)] font-semibold">7/7 → 7/11</span>
+      </div>
+      <div class="text-lg font-extrabold leading-snug">유니토 레지던스 미노시마</div>
+      <div class="jp text-sm text-[color:var(--sub)] mt-0.5">unito residence 美野島 <span class="text-[#5C5C62]">· 룸 102 더블</span></div>
+      <div class="bg-[color:var(--card2)] rounded-xl p-3.5 text-sm mt-3 leading-relaxed">3 Chome-14-28 Minoshima, Hakata Ward, Fukuoka, 812-0017</div>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <button onclick="copyText('3-14-28 Minoshima, Hakata Ward, Fukuoka', this)" class="press bg-[color:var(--card2)] text-[color:var(--text)] font-bold rounded-xl py-3 text-sm">주소 복사</button>
+        <a href="https://www.google.com/maps/search/?api=1&query=unito%20residence%20MINOSHIMA%20Fukuoka" target="_blank" rel="noopener" class="press text-center bg-toss text-white font-bold rounded-xl py-3 text-sm">지도 열기</a>
+      </div>
+      <div class="text-[0.75rem] text-[color:var(--sub)] mt-3 leading-relaxed">🕓 체크인 7/7 16:00 이후 · 체크아웃 7/11 10:00 이전 (규정 엄수)</div>
+    </div>
+
+    <!-- 🛒 미노시마 주변 보급소 -->
+    <div class="card p-5">
+      <h3 class="text-[0.98rem] font-extrabold">🛒 미노시마 주변 보급소</h3>
+      <p class="text-[0.75rem] text-[color:var(--sub)] mt-0.5 mb-3">밤늦게 물·간식 사러 나갈 때 · 전부 숙소 도보권</p>
+
+      <div class="space-y-2">
+        <!-- 사니 -->
+        <a href="https://www.google.com/maps/search/?api=1&query=サニー美野島店" target="_blank" rel="noopener" class="press flex items-start gap-3 bg-[color:var(--card2)] rounded-xl p-3">
+          <span class="text-xl shrink-0 mt-0.5">🛒</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-[0.9rem]">사니 미노시마점 <span class="text-[0.68rem] text-[color:var(--sub)] font-medium">대형 마트</span></div>
+            <div class="flex flex-wrap gap-1 mt-1.5">
+              <span class="chip bg-zinc-600/40 text-zinc-300">24시간</span>
+              <span class="chip bg-zinc-600/40 text-zinc-300">🚶 도보 3분</span>
+            </div>
+            <div class="text-[0.76rem] text-[color:var(--sub)] mt-1.5 leading-relaxed">대용량 생수·할인 도시락·과일이 저렴한 현지 로컬 마트</div>
+          </div>
+          <span class="text-[color:var(--sub)] text-lg shrink-0 self-center">›</span>
+        </a>
+
+        <!-- 세븐일레븐 -->
+        <a href="https://www.google.com/maps/search/?api=1&query=セブンイレブン福岡美野島2丁目店" target="_blank" rel="noopener" class="press flex items-start gap-3 bg-[color:var(--card2)] rounded-xl p-3">
+          <span class="text-xl shrink-0 mt-0.5">7️⃣</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-[0.9rem]">세븐일레븐 미노시마 2초메점</div>
+            <div class="flex flex-wrap gap-1 mt-1.5">
+              <span class="chip bg-zinc-600/40 text-zinc-300">24시간</span>
+              <span class="chip bg-zinc-600/40 text-zinc-300">🚶 도보 4분</span>
+              <span class="chip bg-toss/15 text-toss">💳 ATM 수수료 무료</span>
+            </div>
+            <div class="text-[0.76rem] text-[color:var(--sub)] mt-1.5 leading-relaxed">트래블로그/트래블월렛 무료 출금 · 스무디 · PB 과자</div>
+          </div>
+          <span class="text-[color:var(--sub)] text-lg shrink-0 self-center">›</span>
+        </a>
+
+        <!-- 로손 -->
+        <a href="https://www.google.com/maps/search/?api=1&query=ローソン美野島二丁目店" target="_blank" rel="noopener" class="press flex items-start gap-3 bg-[color:var(--card2)] rounded-xl p-3">
+          <span class="text-xl shrink-0 mt-0.5">🏪</span>
+          <div class="flex-1 min-w-0">
+            <div class="font-bold text-[0.9rem]">로손 미노시마 2초메점</div>
+            <div class="flex flex-wrap gap-1 mt-1.5">
+              <span class="chip bg-zinc-600/40 text-zinc-300">24시간</span>
+              <span class="chip bg-zinc-600/40 text-zinc-300">🚶 도보 3분</span>
+            </div>
+            <div class="text-[0.76rem] text-[color:var(--sub)] mt-1.5 leading-relaxed">5일차 조식용 계란 샌드위치·모찌롤·카라아게군</div>
+          </div>
+          <span class="text-[color:var(--sub)] text-lg shrink-0 self-center">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 준비물 체크리스트 -->
+    <div class="card p-5">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-[0.95rem] font-bold">준비물 체크리스트</h3>
+        <span id="checkCount" class="chip bg-toss/15 text-toss">0/0</span>
+      </div>
+      <ul id="checkList" class="space-y-0.5"></ul>
+      <div class="flex gap-2 mt-3">
+        <input id="newItem" type="text" placeholder="항목 추가 (예: 멀미약)" class="flex-1 bg-[color:var(--card2)] rounded-xl px-3 py-3 text-sm">
+        <button onclick="addCheckItem()" class="press bg-toss text-white font-bold rounded-xl px-4 text-sm">추가</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 4 : 로컬 꿀팁 ============ -->
+  <section id="tab-tips" class="tab-pane space-y-4">
+    <h2 class="text-xl font-extrabold px-1">로컬 꿀팁</h2>
+    <p class="text-[0.78rem] text-[color:var(--sub)] px-1 -mt-2">여행 중 짬 날 때 읽어보는 현지 가이드 · 제목을 탭하면 펼쳐져요</p>
+
+    <!-- 카드 1: 하카타 라멘 -->
+    <div class="transit card overflow-hidden">
+      <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-4 block">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-extrabold text-[1rem]">🍜 하카타 라멘의 비밀</div>
+            <div class="text-[0.8rem] text-[color:var(--sub)] mt-1 leading-snug">이치란 라멘 가기 전 필독 · 왜 후쿠오카는 돈코츠 라멘이 유명할까?</div>
+          </div>
+          <span class="arrow text-[color:var(--sub)] text-sm mt-1 shrink-0">▼</span>
+        </div>
+      </button>
+      <div class="t-detail-wrap"><div class="t-detail">
+        <div class="px-4 pb-4 text-[0.85rem] leading-relaxed">
+          <img src="tipimg/ramen.jpg" alt="돈코츠 라멘 (하카타 라멘)" onerror="this.style.display='none'" class="w-full h-44 object-cover rounded-xl mb-3">
+          후쿠오카(하카타)는 뽀얗고 진한 돼지뼈 육수인 <b class="text-toss">돈코츠 라멘</b>의 발상지예요. 바쁜 수산시장 상인들이 빨리 먹을 수 있도록 아주 <b>얇은 면(세면)</b>을 쓴 것이 특징이죠.
+          <div class="mt-3 bg-[color:var(--card2)] rounded-lg p-3 text-[0.82rem]">
+            💡 이치란에서는 <b>면 익힘 정도</b>를 고를 수 있어요. 현지인처럼 살짝 덜 익혀 꼬들꼬들한 <b class="jp text-toss">カタ麺(카타멘)</b>으로 주문해 보는 걸 추천!
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 카드 2: 다자이후 텐만구 -->
+    <div class="transit card overflow-hidden">
+      <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-4 block">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-extrabold text-[1rem]">⛩️ 다자이후 텐만구의 숨겨진 이야기</div>
+            <div class="text-[0.8rem] text-[color:var(--sub)] mt-1 leading-snug">학문의 신과 소 동상, 그리고 우메가에모찌</div>
+          </div>
+          <span class="arrow text-[color:var(--sub)] text-sm mt-1 shrink-0">▼</span>
+        </div>
+      </button>
+      <div class="t-detail-wrap"><div class="t-detail">
+        <div class="px-4 pb-4 text-[0.85rem] leading-relaxed">
+          <img src="tipimg/dazaifu.jpg" alt="다자이후 텐만구 본전" onerror="this.style.display='none'" class="w-full h-44 object-cover rounded-xl mb-3">
+          다자이후는 <b class="text-toss">학문의 신</b> 스가와라 미치자네를 모시는 신사예요.
+          <div class="mt-3 space-y-2">
+            <div class="bg-[color:var(--card2)] rounded-lg p-3 text-[0.82rem]">
+              🐂 <b>고신규(소 동상)</b> · 입구에 있는 소 동상의 머리를 만지면 머리가 좋아진다는 전설이 있어요.
+            </div>
+            <div class="bg-[color:var(--card2)] rounded-lg p-3 text-[0.82rem]">
+              🍡 <b>우메가에모찌(매화떡)</b> · 겉은 바삭, 속은 팥 앙금이 든 구운 떡. 병마를 물리치고 정신이 맑아진다고 하니 참배 전후에 <b>갓 구운 걸로</b> 하나 꼭!
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 카드 3: 편의점 털이템 -->
+    <div class="transit card overflow-hidden">
+      <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-4 block">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="font-extrabold text-[1rem]">🏪 일본 편의점 필수 털이템</div>
+            <div class="text-[0.8rem] text-[color:var(--sub)] mt-1 leading-snug">로손 &amp; 세븐일레븐 야식 추천 리스트</div>
+          </div>
+          <span class="arrow text-[color:var(--sub)] text-sm mt-1 shrink-0">▼</span>
+        </div>
+      </button>
+      <div class="t-detail-wrap"><div class="t-detail">
+        <div class="px-4 pb-4 text-[0.85rem] leading-relaxed space-y-2">
+          <img src="tipimg/conbini.jpg" alt="일본 편의점 (세븐일레븐)" onerror="this.style.display='none'" class="w-full h-44 object-cover rounded-xl">
+          <div class="bg-[color:var(--card2)] rounded-lg p-3">
+            <div class="font-bold text-toss text-[0.82rem] mb-1">🔵 로손 (Lawson)</div>
+            <ul class="space-y-1 text-[0.82rem]">
+              <li>• <b>Uchi Café 모찌롤</b> — 한국 편의점과 차원이 다른 쫀득함</li>
+              <li>• <b>카라아게군</b> — 계산대 옆 카운터 닭튀김, 야식 맥주 안주 1티어</li>
+              <li>• <b>쟈지 우유 푸딩</b></li>
+            </ul>
+          </div>
+          <div class="bg-[color:var(--card2)] rounded-lg p-3">
+            <div class="font-bold text-emerald-300 text-[0.82rem] mb-1">🟢 세븐일레븐</div>
+            <ul class="space-y-1 text-[0.82rem]">
+              <li>• <b>타마고 산도</b> — 계란 샌드위치의 근본</li>
+              <li>• <b>세븐카페 스무디</b> — 냉동고 과일컵을 기계에 돌려 먹는 리얼 스무디</li>
+            </ul>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <p class="text-center text-[0.66rem] text-[#5C5C62] pt-1">사진 © Wikimedia Commons (CC BY-SA) · 실제 매장/메뉴와 다를 수 있어요</p>
+  </section>
+
+</main>
+
+<!-- ===== Bottom Navigation ===== -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md md:max-w-3xl bg-black/90 backdrop-blur-xl border-t border-[color:var(--line)] flex z-50">
+  <button data-tab="tab-route" class="navbtn active flex-1 flex flex-col items-center pt-2.5 pb-6"><span class="navicon text-xl transition">🗺️</span><span class="text-[0.68rem] font-bold mt-1">일정/길찾기</span></button>
+  <button data-tab="tab-money" class="navbtn flex-1 flex flex-col items-center pt-2.5 pb-6"><span class="navicon text-xl transition">💳</span><span class="text-[0.68rem] font-bold mt-1">가계부</span></button>
+  <button data-tab="tab-prep" class="navbtn flex-1 flex flex-col items-center pt-2.5 pb-6"><span class="navicon text-xl transition">🎫</span><span class="text-[0.68rem] font-bold mt-1">준비/예약</span></button>
+  <button data-tab="tab-tips" class="navbtn flex-1 flex flex-col items-center pt-2.5 pb-6"><span class="navicon text-xl transition">💡</span><span class="text-[0.68rem] font-bold mt-1">로컬 꿀팁</span></button>
+</nav>
+
+<div id="toast" class="fixed bottom-28 left-1/2 -translate-x-1/2 bg-[#F9F9F9] text-black text-sm font-bold px-4 py-2.5 rounded-full opacity-0 pointer-events-none transition-all z-[60] shadow-xl">복사됨</div>
+
+<script>
+/* =========================================================
+   1) 일정 데이터
+   stop: ko(한국어명+설명) · jp(일본어원문) · read(한국어발음)
+         act(핵심행동) · time(시각) · cost(예상비용) · open(예약/운영)
+         addr · badges(교통) · phrase(현지 한마디)
+   day : intensity{level,note} · rain(대체) · budget(예상지출)
+========================================================= */
+const ITINERARY = [
+  { day:1, date:"7/7 (화)", title:"하카타 입성 & 미노시마 정착",
+    intensity:{level:"여유", note:"오후 4시 도착 · 첫날은 하카타 근처만 · 이동 적고 여유롭게"},
+    rain:"전부 실내(포켓몬센터·식당·마트)라 비 와도 문제없어요",
+    budget:"약 ¥6,000/인",
+    stops:[
+      { ko:"후쿠오카 공항 (국제선) 도착", jp:"福岡空港 国際線", read:"후쿠오카 쿠-코- 코쿠사이센", act:"🛬 입국심사·수하물 찾고 1층 1번 승강장서 셔틀 탑승",
+        time:"16:00", cost:"셔틀 무료", open:"입국수속 30~40분 · 셔틀 배차 8~15분",
+        addr:"Fukuoka Airport International Terminal 1F",
+        badges:[{t:"bus",x:"1번 승강장 셔틀"},{t:"info",x:"약 10~15분 소요"}],
+        phrase:{jp:"シャトルバスの乗り場はどこですか？", read:"샤토루바스노 노리바와 도코데스카", mean:"셔틀버스 타는 곳이 어디인가요?"} },
+      { ko:"국내선 터미널 하차 및 지하철 탑승", jp:"国内線ターミナル 地下鉄", read:"코쿠나이센 타-미나루 치카테츠", act:"🚇 셔틀 하차 후 지하 2층으로 이동",
+        time:"16:50", cost:"교통 ¥260", open:"지하 2층 개찰구",
+        addr:"Fukuoka Airport Domestic Terminal B2F",
+        badges:[{t:"subway",x:"空港線(쿠-코-센) 탑승"}],
+        phrase:{jp:"博多駅までお願いします", read:"하카타에키마데 오네가이시마스", mean:"하카타역까지 부탁합니다"} },
+      { ko:"포켓몬 센터 · 하카타 마루이 2층", jp:"ポケモンセンター 博多マルイ 2F", read:"포케몬 센타- 하카타 마루이", act:"굿즈·피규어 쇼핑 ⚡",
+        time:"17:30", cost:"예산 ¥3,000~", open:"10:00~21:00 · 예약 불필요",
+        addr:"9-1 Hakataekichuogai, Hakata Ward, Fukuoka 812-0012",
+        badges:[{t:"stop",x:"博多駅 하카타에키 하차"},{t:"walk",x:"도보 5분"}],
+        phrase:{jp:"これ、袋に入れてください", read:"코레, 후쿠로니 이레테 쿠다사이", mean:"이거 봉투에 넣어주세요"} },
+      { ko:"하카타 하라미타스 · 츄오가이빌딩 6층", jp:"博多ハラミタス 博多中央街ビル 6F", read:"하카타 하라미타스", act:"🍖 소고기 무한리필 저녁",
+        time:"18:30", cost:"¥3,500~4,000/인", open:"예약 권장 · 첫날 저녁 러시",
+        addr:"6-3 Hakataekichuogai, Hakata Ward, Fukuoka 812-0012",
+        badges:[{t:"walk",x:"포켓몬센터서 도보 2분"}],
+        phrase:{jp:"２人です。食べ放題で", read:"후타리데스. 타베호-다이데", mean:"두 명이요. 무한리필로요"} },
+      { ko:"숙소 · 유니토 레지던스 미노시마", jp:"unito residence 美野島", read:"유니-토 레지덴스 미노시마", act:"🏠 체크인 & 짐 풀기",
+        time:"20:30", cost:"결제 완료", open:"체크인 16:00 이후 · 셀프 PIN",
+        addr:"3-14-28 Minoshima, Hakata Ward, Fukuoka 812-0017",
+        badges:[{t:"subway",x:"博多駅서 이동"},{t:"walk",x:"도보 15분"},{t:"bus",x:"버스도 편리"}],
+        phrase:{jp:"チェックインお願いします", read:"첵쿠인 오네가이시마스", mean:"체크인 부탁합니다"} },
+      { ko:"사니 미노시마점 · 마트", jp:"サニー 美野島店", read:"사니- 미노시마텐", act:"🛒 물·간식·맥주 장보기",
+        time:"21:00", cost:"약 ¥2,000", open:"~24:00 영업",
+        addr:"3-20-5 Minoshima, Hakata Ward, Fukuoka 812-0017",
+        badges:[{t:"walk",x:"숙소서 도보 3분"}],
+        phrase:{jp:"袋ください", read:"후쿠로 쿠다사이", mean:"봉투 주세요"} },
+    ]},
+  { day:2, date:"7/8 (수)", title:"오호리 공원 & 시사이드 모모치",
+    intensity:{level:"보통", note:"도보 이동이 많은 날 · 해변 산책 · 양산·물 필수 ☀️"},
+    rain:"타워는 실내 전망대 OK · 오호리는 후쿠오카시립박물관(실내)으로 대체",
+    budget:"약 ¥4,000/인",
+    stops:[
+      { ko:"숙소에서 출발", jp:"美野島（宿）", read:"미노시마 (야도)", act:"🏠 아침 식사 후 출발",
+        time:"09:30", cost:"", open:"",
+        addr:"3-14-28 Minoshima, Hakata Ward, Fukuoka 812-0017",
+        phrase:{jp:"おはようございます", read:"오하요- 고자이마스", mean:"안녕하세요 (아침)"} },
+      { ko:"오호리 공원", jp:"大濠公園", read:"오-호리 코-엔", act:"🦆 호수 산책 & 카페 힐링",
+        time:"10:15", cost:"무료", open:"24시간 개방",
+        addr:"Ohorikoen, Chuo Ward, Fukuoka 810-0051",
+        badges:[{t:"subway",x:"空港線"},{t:"stop",x:"大濠公園駅 오-호리코-엔에키 하차"}],
+        phrase:{jp:"写真を撮ってください", read:"샤신오 톳테 쿠다사이", mean:"사진 찍어주세요"} },
+      { ko:"미즈호 페이페이 돔", jp:"みずほPayPayドーム福岡", read:"미즈호 페이페이 도-무", act:"⚾ 돔구장 외관 구경",
+        time:"12:30", cost:"외관 무료", open:"내부 투어는 예약제",
+        addr:"2-2-2 Jigyohama, Chuo Ward, Fukuoka 810-8660",
+        badges:[{t:"bus",x:"버스 편리"},{t:"stop",x:"唐人町駅 토-진마치에키 → 도보 15분"}],
+        phrase:{jp:"チケットはいくらですか？", read:"치켓토와 이쿠라데스카", mean:"입장권 얼마예요?"} },
+      { ko:"후쿠오카 타워", jp:"福岡タワー", read:"후쿠오카 타와-", act:"🗼 해변 산책 & 노을 전망대",
+        time:"15:00", cost:"전망대 ¥800", open:"09:30~22:00",
+        addr:"2-3-26 Momochihama, Sawara Ward, Fukuoka 814-0001",
+        badges:[{t:"walk",x:"돔서 해변길 도보 12분"}],
+        phrase:{jp:"きれいですね", read:"키레이데스네", mean:"예쁘네요!"} },
+    ]},
+  { day:3, date:"7/9 (목)", title:"다자이후 & 텐진 실내 피서",
+    intensity:{level:"빡셈", note:"다자이후 왕복 + 텐진 + 나카스 야경까지 풀코스 · 체력 안배!"},
+    rain:"다자이후 스타벅스·상점가, 텐진 지하상가로 실내 위주 진행 가능",
+    budget:"약 ¥7,000/인",
+    stops:[
+      { ko:"숙소에서 출발", jp:"美野島（宿）", read:"미노시마 (야도)", act:"🏠 니시테츠 전철로 다자이후행",
+        time:"09:00", cost:"", open:"",
+        addr:"3-14-28 Minoshima, Hakata Ward, Fukuoka 812-0017",
+        phrase:{jp:"行ってきます", read:"잇테키마스", mean:"다녀오겠습니다"} },
+      { ko:"다자이후 텐만구", jp:"太宰府天満宮", read:"다자이후 텐만구-", act:"⛩️ 참배·우메가에모찌·스타벅스",
+        time:"10:00", cost:"전철 왕복 ¥1,000", open:"06:30~19:00 · 참배 무료",
+        addr:"4-7-1 Saifu, Dazaifu, Fukuoka 818-0117",
+        badges:[{t:"subway",x:"西鉄電車 니시테츠"},{t:"stop",x:"太宰府駅 다자이후에키 하차"}],
+        phrase:{jp:"切符売り場はどこですか？", read:"킷푸우리바와 도코데스카", mean:"매표소 어디예요?"} },
+      { ko:"텐진 파르코 · 지하상가", jp:"天神パルコ・天神地下街", read:"텐진 파루코 · 텐진 치카가이", act:"🛍️ 더위 피해 실내 쇼핑 & 점심",
+        time:"13:30", cost:"점심 ¥1,500~", open:"10:00~20:00",
+        addr:"2-11-1 Tenjin, Chuo Ward, Fukuoka 810-0001",
+        badges:[{t:"subway",x:"西鉄電車"},{t:"stop",x:"西鉄福岡(天神)駅 하차"}],
+        phrase:{jp:"試着してもいいですか？", read:"시챠쿠시테모 이-데스카", mean:"입어봐도 돼요?"} },
+      { ko:"천부라 히라오 · 텐진 아크로스점", jp:"天麩羅処ひらお 天神アクロス店", read:"텐푸라도코로 히라오", act:"🍤 갓 튀긴 튀김 정식 (가성비·이른 저녁)",
+        time:"17:00", cost:"¥1,000~/인", open:"예약 불가 · 갓 튀김 · 웨이팅 有",
+        addr:"1-1-1 Tenjin, Chuo Ward, Fukuoka 810-0001",
+        badges:[{t:"walk",x:"파르코서 도보 5분"}],
+        phrase:{jp:"おすすめは何ですか？", read:"오스스메와 난데스카", mean:"추천 메뉴는 뭐예요?"} },
+      { ko:"나카스 강변 야경", jp:"中洲（川沿い）", read:"나카스 (카와조이)", act:"🌉 강변 야경·야타이(포장마차) 구경",
+        time:"19:30", cost:"구경 무료", open:"야타이 18:00~심야",
+        addr:"Nakasu, Hakata Ward, Fukuoka 810-0801",
+        badges:[{t:"walk",x:"도보 이동"}],
+        phrase:{jp:"きれい！", read:"키레이", mean:"예쁘다!"} },
+      { ko:"이치란 본사 총본점", jp:"一蘭 本社総本店", read:"이치란 혼샤 소-혼텐", act:"🍜 야식 돈코츠 라멘",
+        time:"21:00", cost:"¥1,000~", open:"24시간 · 밤엔 웨이팅 ↓",
+        addr:"5-3-2 Nakasu, Hakata Ward, Fukuoka 810-0801",
+        badges:[{t:"walk",x:"나카스서 도보"}],
+        phrase:{jp:"ラーメン一つください", read:"라-멘 히토츠 쿠다사이", mean:"라멘 하나 주세요"} },
+    ]},
+  { day:4, date:"7/10 (금)", title:"하카타·텐진 기념품 쇼핑",
+    intensity:{level:"보통", note:"쇼핑·먹방 위주 · 대부분 실내라 날씨 무관 · 짐 늘어남 주의 🛍️"},
+    rain:"전 코스 실내(캐널시티·요도바시·돈키호테)라 비와 무관 👍",
+    budget:"약 ¥15,000/인",
+    stops:[
+      { ko:"숙소에서 출발", jp:"美野島（宿）", read:"미노시마 (야도)", act:"🏠 브런치 오픈런 준비",
+        time:"10:00", cost:"", open:"",
+        addr:"3-14-28 Minoshima, Hakata Ward, Fukuoka 812-0017",
+        phrase:{jp:"今日は暑いですね", read:"쿄-와 아츠이데스네", mean:"오늘 덥네요"} },
+      { ko:"돼지 스테이크 토이치 · 스미요시점", jp:"豚ステーキ 十一 住吉店", read:"부타스테-키 토이치 스미요시텐", act:"🐖 철판 돼지 스테이크 정식 (¥1,100 · 오픈런)",
+        time:"11:00", cost:"¥1,100~", open:"11:00~14:00 · 예약 불가 · 웨이팅 有",
+        addr:"3-6-4 Sumiyoshi, Hakata Ward, Fukuoka 812-0018",
+        badges:[{t:"walk",x:"미노시마서 도보 15분"}],
+        phrase:{jp:"開いてますか？", read:"아이테마스카", mean:"영업하나요?"} },
+      { ko:"캐널시티 하카타", jp:"キャナルシティ博多", read:"캬나루시티 하카타", act:"⛲ 분수쇼 & 캐릭터샵",
+        time:"13:00", cost:"구경 무료", open:"10:00~21:00",
+        addr:"1-2 Sumiyoshi, Hakata Ward, Fukuoka 812-0018",
+        badges:[{t:"walk",x:"도보 이동"}],
+        phrase:{jp:"何時までですか？", read:"난지마데데스카", mean:"몇 시까지 해요?"} },
+      { ko:"요도바시 카메라 하카타", jp:"ヨドバシカメラ 博多", read:"요도바시 카메라 하카타", act:"🎮 전자·피규어·가챠 성지",
+        time:"15:00", cost:"예산 ¥5,000~", open:"09:30~22:00 · 면세 가능",
+        addr:"6-12 Hakataekichuogai, Hakata Ward, Fukuoka 812-0012",
+        badges:[{t:"walk",x:"하카타역 방면 도보"}],
+        phrase:{jp:"免税できますか？", read:"멘제- 데키마스카", mean:"면세 되나요?"} },
+      { ko:"스시 사카바 사시스 · 하카타 마이닝점", jp:"すし酒場 さしす 博多マイング店", read:"스시사카바 사시스 하카타마잉구텐", act:"🍣 이른 저녁 스시 (하카타역 직결)",
+        time:"16:00", cost:"¥3,000~", open:"11:00~22:00 · 브레이크타임 없음 · 16시 웨이팅↓",
+        addr:"1-1 Hakataekichuogai, Hakata Ward, Fukuoka 812-0012",
+        badges:[{t:"walk",x:"하카타역 마이닝 직결"}],
+        phrase:{jp:"お会計お願いします", read:"오카이케- 오네가이시마스", mean:"계산해주세요"} },
+      { ko:"돈키호테 텐진 본점", jp:"ドン・キホーテ 天神本店", read:"돈키호-테 텐진 혼텐", act:"🛒 기념품 폭풍 쇼핑",
+        time:"19:00", cost:"예산 ¥5,000~", open:"24시간 영업 · 면세 가능",
+        addr:"1-20-17 Imaizumi, Chuo Ward, Fukuoka 810-0021",
+        badges:[{t:"subway",x:"지하철/버스"},{t:"stop",x:"天神 텐진 방면"}],
+        phrase:{jp:"袋はいりません", read:"후쿠로와 이리마셍", mean:"봉투 필요없어요"} },
+    ]},
+  { day:5, date:"7/11 (토)", title:"굿바이 후쿠오카 (안전 귀국)",
+    intensity:{level:"빡셈", note:"아침 일찍 서둘러야 해요! 셔틀버스 이동 시간과 수속 대기열을 고려해 넉넉히 출발합니다."},
+    rain:"우산은 수하물에 넣거나 기내 반입 규정을 꼭 확인하세요.",
+    budget:"공항 면세점 털기",
+    stops:[
+      { ko:"기상 및 셀프 체크아웃", jp:"起床・チェックアウト", read:"키쇼- · 첵쿠아우토", act:"🧳 잊은 물건 없는지 확인!",
+        time:"07:30", cost:"", open:"",
+        addr:"3-14-28 Minoshima, Hakata Ward, Fukuoka 812-0017",
+        badges:[{t:"info",x:"쓰레기 정리 및 소등"}],
+        phrase:{jp:"お世話になりました", read:"오세와니 나리마시타", mean:"신세 많이 졌습니다"} },
+      { ko:"편의점 샌드위치 픽업", jp:"コンビニ", read:"콤비니", act:"🏪 이동하면서 먹을 아침 구하기",
+        time:"07:40", cost:"¥500~", open:"전날 밤에 미리 사두는 것 추천!",
+        addr:"Minoshima, Hakata Ward, Fukuoka",
+        badges:[{t:"walk",x:"역으로 가는 길"}],
+        phrase:{jp:"これお願いします", read:"코레 오네가이시마스", mean:"이거 계산해주세요"} },
+      { ko:"하카타역 공항선 탑승", jp:"博多駅 空港線", read:"하카타에키 쿠-코-센", act:"🚉 IC카드로 개찰 후 공항선 탑승 (반납은 공항 도착 후!)",
+        time:"08:00", cost:"교통 ¥260", open:"카드는 공항역서 반납 예정",
+        addr:"1-1 Hakataekichuogai, Hakata Ward, Fukuoka 812-0012",
+        badges:[{t:"walk",x:"숙소서 도보 15분"},{t:"subway",x:"空港線 탑승"}],
+        phrase:{jp:"この電車は福岡空港行きですか？", read:"코노 덴샤와 후쿠오카쿠-코-유키데스카", mean:"이 열차 후쿠오카공항행 맞나요?"} },
+      { ko:"후쿠오카 공항역 하차 & IC카드 반납", jp:"福岡空港駅 払い戻し", read:"후쿠오카 쿠-코-에키 하라이모도시", act:"🔙 개찰구 역무원 창구에서 카드 환불",
+        time:"08:15", cost:"잔액 0원 시 수수료 무료", open:"보증금 500엔 환불",
+        addr:"Fukuoka Airport Domestic Terminal B2F",
+        badges:[{t:"info",x:"국제선 가기 전 무조건 여기서 반납!"}],
+        phrase:{jp:"払い戻しをお願いします", read:"하라이모도시오 오네가이시마스", mean:"(교통카드) 환불 부탁합니다"} },
+      { ko:"국내선 → 국제선 셔틀버스", jp:"連絡バス", read:"렌라쿠 바스", act:"🚌 지하 2층에서 1층으로 올라와 셔틀 탑승 (요금 없음·카드 불필요)",
+        time:"08:20", cost:"셔틀 무료", open:"배차 8~15분 간격",
+        addr:"Fukuoka Airport Domestic Terminal 1F",
+        badges:[{t:"bus",x:"1층 밖 전용 정류장"},{t:"info",x:"약 10~15분 소요"}],
+        phrase:{jp:"国際線に行きますか？", read:"코쿠사이센니 이키마스카", mean:"국제선으로 가나요?"} },
+      { ko:"후쿠오카 공항 국제선 도착", jp:"福岡空港 国際線", read:"후쿠오카 쿠-코- 코쿠사이센", act:"✈️ 수하물 위탁 및 출국 심사",
+        time:"08:45", cost:"", open:"11:05 출발 (2시간 20분 전 도착)",
+        addr:"Fukuoka Airport, Hakata Ward, Fukuoka 812-0851",
+        badges:[{t:"stop",x:"수속 후 면세구역 진입"}],
+        phrase:{jp:"窓側の席をお願いします", read:"마도가와노 세키오 오네가이시마스", mean:"창가 자리로 부탁합니다"} },
+    ]},
+];
+
+const BADGE = {
+  subway:"bg-blue-500/15 text-blue-300", bus:"bg-emerald-500/15 text-emerald-300",
+  walk:"bg-zinc-600/40 text-zinc-300", stop:"bg-amber-500/15 text-amber-300", info:"bg-zinc-600/40 text-zinc-400",
+};
+const LVL = { "여유":"bg-emerald-500/15 text-emerald-300", "보통":"bg-blue-500/15 text-blue-300", "빡셈":"bg-amber-500/15 text-amber-300" };
+
+/* 노선 색상 */
+const TLINE = {
+  orange:{chip:"bg-orange-500/15 text-orange-300", bar:"#EF7C1B"},  // 후쿠오카 지하철 공항선
+  red:   {chip:"bg-red-500/15 text-red-300",       bar:"#E60012"},  // 니시테츠 텐진오무타선
+  green: {chip:"bg-emerald-500/15 text-emerald-300",bar:"#12B981"}, // 니시테츠 버스
+};
+
+/* =========================================================
+   교통 안내 카드 데이터 (실제 후쿠오카 노선 하드코딩)
+   key: "일차-stop인덱스(0base)"
+========================================================= */
+const TRANSIT = {
+  // Day1 ② 국내선 지하철 탑승: 후쿠오카공항역 → 하카타역
+  "1-1":{ color:"orange", icon:"🟠", lineKo:"지하철 공항선", lineJp:"地下鉄 空港線",
+    directionJp:"姪浜方面", directionKo:"메이노하마 방면",
+    platform:"공항역 단일 승강장", ride:"2정거장 · 약 5분",
+    getOff:"하카타역(博多) 하차", exit:"博多口(하카타구치) 방면",
+    fromStation:{ko:"후쿠오카공항역", jp:"福岡空港駅", en:"Fukuoka Airport"},
+    toStation:{ko:"하카타역", jp:"博多駅", en:"Hakata"},
+    realDir:"공항은 노선의 종점이라, 모든 열차가 시내(하카타·텐진) 방향으로만 출발해요. 방향을 헷갈릴 일이 거의 없습니다.",
+    warn:["종점 출발이라 아무 열차나 타도 전부 시내행","급행·완행 구분 없음 (모든 역 정차)","요금 ¥260 · 교통카드 또는 발권기 현금"],
+    walkHint:"하카타역 '博多口(하카타구치)' 방면 개찰구 → 포켓몬센터는 마루이(マルイ) 백화점 2층" },
+
+  // Day1 ⑤ 하카타 → 미노시마 (숙소)  ※도보 15분 or 버스
+  "1-4":{ color:"green", icon:"🚌", lineKo:"니시테츠 버스", lineJp:"西鉄バス",
+    directionJp:"美野島・雑餉隈方面", directionKo:"미노시마 방면",
+    platform:"하카타역 앞 버스승강장", ride:"약 5분 · 2~3정거장",
+    getOff:"'美野島(미노시마)' 정류장 하차", exit:"숙소까지 도보 3분",
+    fromStation:{ko:"하카타역", jp:"博多駅", en:"Hakata Sta."},
+    toStation:{ko:"미노시마 정류장", jp:"美野島", en:"Minoshima"},
+    realDir:"하카타역에서 남쪽(미노시마·다케시타 방면)으로 내려가는 버스. 짐이 가벼우면 도보 15분도 충분해요.",
+    warn:["버스 번호가 다양 → '美野島' 경유 여부만 확인","일본 버스는 뒷문 승차·앞문 하차 후불 정산","도보 대안: 하카타역서 남쪽으로 약 15분 (평지)"],
+    walkHint:"'美野島' 정류장 하차 후 골목 안쪽으로 도보 3분" },
+
+  // Day2 ② (하카타) → 오호리공원
+  "2-1":{ color:"orange", icon:"🟠", lineKo:"지하철 공항선", lineJp:"地下鉄 空港線",
+    directionJp:"姪浜方面", directionKo:"메이노하마 방면",
+    platform:"하카타역 지하 승강장", ride:"5정거장 · 약 11분",
+    getOff:"오호리공원역(大濠公園) 하차", exit:"3번 출구 (공원 정문)",
+    fromStation:{ko:"하카타역", jp:"博多駅", en:"Hakata"},
+    toStation:{ko:"오호리공원역", jp:"大濠公園駅", en:"Ohorikoen"},
+    realDir:"하카타 → 텐진을 지나 서쪽(메이노하마)으로 가는 시내 관통 열차. 博多·祇園·中洲川端·天神·赤坂·大濠公園 순서.",
+    warn:["🚨 반대편 '福岡空港(공항)행'은 정반대 방향 → 姪浜(메이노하마) 방면 확인","급행 없음, 각 역 정차라 6번째 역에서 하차","요금 ¥260"],
+    walkHint:"3번 출구로 나오면 바로 오호리공원 입구 · 호수까지 도보 3분" },
+
+  // Day2 ③ 오호리공원 → 페이페이돔
+  "2-2":{ color:"green", icon:"🚌", lineKo:"니시테츠 버스", lineJp:"西鉄バス",
+    directionJp:"PayPayドーム/百道方面", directionKo:"페이페이돔·모모치 방면",
+    platform:"오호리공원 인근 정류장", ride:"약 10분",
+    getOff:"'PayPayドーム前' 하차", exit:"돔 정문 방면",
+    fromStation:{ko:"오호리공원", jp:"大濠公園", en:"Ohori Park"},
+    toStation:{ko:"페이페이돔앞", jp:"PayPayドーム前", en:"PayPay Dome"},
+    realDir:"도심에서 시사이드 모모치(百道浜) 방면으로 가는 버스. 지하철은 唐人町역 하차 후 도보 15분이라 버스가 편해요.",
+    warn:["정류장 표기가 'ヤフオクドーム前' 또는 '九州医療センター'일 수 있음","지하철 대안: 空港線 唐人町(토진마치)역 → 도보 15분","버스 요금 ¥190~"],
+    walkHint:"돔 하차 후 정문 방향 · 바로 옆 마크이즈(MARK IS) 쇼핑몰" },
+
+  // Day3 ② (텐진) → 다자이후
+  "3-1":{ color:"red", icon:"🔴", lineKo:"니시테츠 텐진오무타선", lineJp:"西鉄天神大牟田線",
+    directionJp:"大牟田・筑紫方面", directionKo:"오무타(치쿠시) 방면",
+    platform:"니시테츠후쿠오카(텐진)역", ride:"급행+환승 · 약 25분",
+    getOff:"다자이후역(太宰府) 하차", exit:"참배길(参道) 정면 출구",
+    fromStation:{ko:"니시테츠후쿠오카(텐진)역", jp:"西鉄福岡(天神)駅", en:"Nishitetsu-Fukuoka(Tenjin)"},
+    toStation:{ko:"다자이후역", jp:"太宰府駅", en:"Dazaifu"},
+    realDir:"텐진에서 남쪽으로 내려가, 西鉄二日市(니시테츠 후츠카이치)에서 '다자이후선'으로 갈아탑니다.",
+    warn:["🚨 二日市(후츠카이치)에서 반드시 '太宰府(다자이후)행'으로 환승","급행 타면 二日市까지 빠름 · 普通(완행)은 느림","관광열차 '旅人(타비토)'가 오면 환승 없이 직행","왕복 약 ¥천 내외 · IC카드 가능"],
+    walkHint:"다자이후역을 나오면 정면이 곧 참배길 → 우메가에모찌·스타벅스 도보 5분" },
+
+  // Day3 ③ 다자이후 → 텐진
+  "3-2":{ color:"red", icon:"🔴", lineKo:"니시테츠 텐진오무타선", lineJp:"西鉄天神大牟田線",
+    directionJp:"福岡(天神)方面", directionKo:"후쿠오카(텐진) 방면",
+    platform:"다자이후역", ride:"환승+급행 · 약 25분",
+    getOff:"니시테츠후쿠오카(텐진)역 하차 · 종점", exit:"텐진 지하상가 직결",
+    fromStation:{ko:"다자이후역", jp:"太宰府駅", en:"Dazaifu"},
+    toStation:{ko:"니시테츠후쿠오카(텐진)역", jp:"西鉄福岡(天神)駅", en:"Nishitetsu-Fukuoka(Tenjin)"},
+    realDir:"올 때의 역순. 다자이후선으로 二日市까지 간 뒤, 天神행 급행으로 환승합니다.",
+    warn:["二日市에서 '福岡(天神)방면' 급행으로 환승","🚨 반대편 大牟田(오무타)행 타지 않도록 주의","텐진이 종점이라 끝까지 타면 됨"],
+    walkHint:"텐진역 하차 → 파르코·지하상가로 바로 실내 연결(비 와도 OK)" },
+
+  // Day4 ⑥ (하카타) → 텐진 (돈키호테)
+  "4-5":{ color:"orange", icon:"🟠", lineKo:"지하철 공항선", lineJp:"地下鉄 空港線",
+    directionJp:"姪浜方面", directionKo:"메이노하마 방면",
+    platform:"하카타역 지하 승강장", ride:"3정거장 · 약 5분",
+    getOff:"텐진역(天神) 하차", exit:"돈키호테·파르코 방면",
+    fromStation:{ko:"하카타역", jp:"博多駅", en:"Hakata"},
+    toStation:{ko:"텐진역", jp:"天神駅", en:"Tenjin"},
+    realDir:"하카타에서 시내 중심 텐진으로 가는 방향(메이노하마행). 博多 → 祇園 → 中洲川端 → 天神 순서.",
+    warn:["🚨 반대편 '福岡空港(공항)행' 주의 → 姪浜 방면 탑승","中洲川端 다음이 天神 (3번째 역)","요금 ¥210"],
+    walkHint:"돈키호테는 텐진역 남쪽 이마이즈미(今泉) 국체도로변 · 니시테츠후쿠오카역 남쪽 출구서 도보 약 5분(지하상가 직결 아님)" },
+
+  // Day5 ③ 하카타역 공항선 탑승 → 후쿠오카공항 국내선 (귀국)
+  "5-2":{ color:"orange", icon:"🟠", lineKo:"지하철 공항선", lineJp:"地下鉄 空港線",
+    directionJp:"福岡空港方面", directionKo:"후쿠오카공항 방면",
+    platform:"하카타역 지하 승강장 (반대편!)", ride:"2정거장 · 약 5분",
+    getOff:"후쿠오카공항역(福岡空港) 하차 · 종점", exit:"국내선 청사 지하",
+    fromStation:{ko:"하카타역", jp:"博多駅", en:"Hakata"},
+    toStation:{ko:"후쿠오카공항역", jp:"福岡空港駅", en:"Fukuoka Airport"},
+    realDir:"올 때와 정반대 방향! 시내에서 공항으로 들어가는 東(동)쪽 방향 열차입니다.",
+    warn:["🚨 반드시 '福岡空港행' 승강장에서 탑승 (姪浜방면 아님!)","지하철역은 국내선 청사 지하 → 국제선(부산행)은 무료 셔틀 10분 추가","탑승 1시간 전 도착 기준, 여유 있게 이동"],
+    walkHint:"공항역 종점 하차 → 국내선 청사, 국제선 터미널은 무료 연결버스로 이동" },
+};
+
+/* =========================================================
+   2) 탭 전환
+========================================================= */
+document.querySelectorAll('.navbtn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+/* =========================================================
+   3) 타임라인 + 구글맵 길찾기 + 오늘 강도/지금할일
+========================================================= */
+let currentDay = 1;
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function loc(s){ return s.addr ? s.addr : (s.jp.replace(/（.*?）/g,'').trim()+' 福岡'); }
+function searchUrl(s){ return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(loc(s)); }
+function dirUrl(origin, dest){ return "https://www.google.com/maps/dir/?api=1&origin="+encodeURIComponent(origin)+"&destination="+encodeURIComponent(dest)+"&travelmode=transit"; }
+
+// 오늘이 여행 중이면 며칠차인지
+function tripDayToday(){
+  const start=new Date(2026,6,7); const now=new Date();
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const n=Math.round((today-start)/86400000)+1;
+  return (n>=1 && n<=5) ? n : null;
+}
+function toMin(t){ if(!t) return null; const [h,m]=t.split(':').map(Number); return h*60+m; }
+// 오늘 보고 있는 날의 '다음 코스' 인덱스
+function activeIndex(day){
+  if(tripDayToday()!==day) return -1;
+  const d=ITINERARY.find(x=>x.day===day); const now=new Date();
+  const cur=now.getHours()*60+now.getMinutes();
+  for(let i=0;i<d.stops.length;i++){ const t=toMin(d.stops[i].time); if(t!==null && t>=cur) return i; }
+  return d.stops.length-1;
+}
+
+function renderChips(){
+  document.getElementById('dayChips').innerHTML = ITINERARY.map(d=>{
+    const on=d.day===currentDay;
+    return `<button onclick="selectDay(${d.day})" class="press shrink-0 px-4 py-2.5 rounded-2xl font-bold text-sm ${on?'bg-toss text-white':'bg-[color:var(--card)] text-[color:var(--sub)]'}">Day ${d.day}<span class="text-[0.68rem] font-medium ml-1 opacity-80">${d.date.split(' ')[0]}</span></button>`;
+  }).join('');
+}
+function selectDay(d){ currentDay=d; renderChips(); renderTimeline(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function daySummaryCard(d){
+  const lvl = LVL[d.intensity.level] || LVL["보통"];
+  const start = d.stops[0] && d.stops[0].time ? d.stops[0].time : "-";
+  return `
+  <div class="card p-5">
+    <div class="flex items-center justify-between">
+      <div class="text-[0.8rem] text-[color:var(--sub)] font-bold">오늘 일정 강도</div>
+      <span class="chip ${lvl} text-[0.75rem]">${esc(d.intensity.level)}</span>
+    </div>
+    <div class="text-sm mt-2 leading-relaxed">${esc(d.intensity.note)}</div>
+    <div class="grid grid-cols-3 gap-2 mt-4">
+      <div class="bg-[color:var(--card2)] rounded-xl py-2.5 text-center">
+        <div class="text-[0.62rem] text-[color:var(--sub)] font-bold">출발</div>
+        <div class="text-[0.95rem] font-extrabold text-toss mt-0.5">${esc(start)}</div></div>
+      <div class="bg-[color:var(--card2)] rounded-xl py-2.5 text-center">
+        <div class="text-[0.62rem] text-[color:var(--sub)] font-bold">코스</div>
+        <div class="text-[0.95rem] font-extrabold mt-0.5">${d.stops.length}곳</div></div>
+      <div class="bg-[color:var(--card2)] rounded-xl py-2.5 text-center">
+        <div class="text-[0.62rem] text-[color:var(--sub)] font-bold">예상</div>
+        <div class="text-[0.82rem] font-extrabold mt-0.5">${esc(d.budget.replace('약 ',''))}</div></div>
+    </div>
+    <div class="mt-3 bg-[color:var(--card2)] rounded-xl p-3 text-[0.78rem] leading-relaxed">
+      <span class="text-toss font-bold">☔ 비/지연 시</span> · ${esc(d.rain)}
+    </div>
+  </div>`;
+}
+
+function stationBox(label, st){
+  return `<div class="bg-[color:var(--card)] rounded-lg p-2.5">
+    <div class="text-[0.6rem] text-[color:var(--sub)] font-bold">${label}</div>
+    <div class="font-bold text-[0.85rem] mt-0.5 break-keep">${esc(st.ko)}</div>
+    <div class="jp text-[0.7rem] text-[color:var(--sub)] mt-0.5">${esc(st.jp)} · ${esc(st.en)}</div>
+  </div>`;
+}
+function transitCard(t){
+  const c = TLINE[t.color] || TLINE.orange;
+  const warns = (t.warn||[]).map(w=>`<li class="flex gap-1.5"><span class="shrink-0">•</span><span>${esc(w)}</span></li>`).join('');
+  const stationQ = (jp)=>{ jp=String(jp); if(/駅$/.test(jp)) return jp; if(/ドーム|美野島/.test(jp)) return jp; return jp+' 駅'; };
+  const map = dirUrl(stationQ(t.fromStation.jp), stationQ(t.toStation.jp));
+  return `
+  <div class="transit mt-3 rounded-xl overflow-hidden" style="background:var(--card2);border-left:3px solid ${c.bar}">
+    <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-3 block">
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="chip ${c.chip}">${t.icon} ${esc(t.lineKo)}</span>
+            <span class="jp text-[0.66rem] text-[color:var(--sub)]">${esc(t.lineJp)}</span>
+          </div>
+          <div class="mt-1.5 font-extrabold text-[1.02rem] leading-tight break-keep">
+            <span class="jp">${esc(t.directionJp)}</span><span class="text-toss"> · ${esc(t.directionKo)}</span>
+          </div>
+          <div class="text-[0.74rem] text-[color:var(--sub)] mt-1.5">🚉 ${esc(t.platform)} · ${esc(t.ride)}</div>
+          <div class="text-[0.74rem] text-[color:var(--sub)] mt-0.5">📍 ${esc(t.getOff)} · ${esc(t.exit)}</div>
+        </div>
+        <span class="arrow text-[color:var(--sub)] text-xs mt-1 shrink-0">▼</span>
+      </div>
+    </button>
+    <div class="t-detail-wrap"><div class="t-detail">
+      <div class="px-3 pb-3 space-y-3 text-[0.8rem]">
+        <div class="grid grid-cols-2 gap-2">${stationBox('출발역', t.fromStation)}${stationBox('도착역', t.toStation)}</div>
+        <div>
+          <div class="text-[0.62rem] text-[color:var(--sub)] font-bold">실질적 방향</div>
+          <div class="mt-0.5 leading-relaxed">${esc(t.realDir)}</div>
+        </div>
+        <div class="bg-red-500/10 rounded-lg p-2.5">
+          <div class="text-[0.68rem] font-bold text-red-300 mb-1">🚨 헷갈림 방지</div>
+          <ul class="space-y-1 text-red-200 text-[0.76rem] leading-relaxed">${warns}</ul>
+        </div>
+        <div>
+          <div class="text-[0.62rem] text-[color:var(--sub)] font-bold">🚶 도보 방향 힌트</div>
+          <div class="mt-0.5 leading-relaxed">${esc(t.walkHint)}</div>
+        </div>
+        <a href="${map}" target="_blank" rel="noopener" class="press block text-center bg-toss text-white font-bold rounded-xl py-2.5 text-[0.8rem]">🗺️ Google Maps 경로 뷰</a>
+      </div>
+    </div></div>
+  </div>`;
+}
+function toggleTransit(btn){ btn.closest('.transit').classList.toggle('open'); }
+
+/* =========================================================
+   VJW QR 이미지 직접 첨부 (FileReader + localStorage)
+========================================================= */
+function setVjwQr(dataUrl){
+  const img=document.getElementById('vjwPreview');
+  const wrap=document.getElementById('vjwPreviewWrap');
+  const btn=document.getElementById('vjwUploadBtn');
+  if(!img||!wrap||!btn) return;
+  if(dataUrl){ img.src=dataUrl; wrap.classList.remove('hidden'); btn.classList.add('hidden'); }
+  else{ img.removeAttribute('src'); wrap.classList.add('hidden'); btn.classList.remove('hidden'); }
+}
+function saveVjwQr(url){
+  try{ localStorage.setItem('fuk_vjw_qr', url); showToast('📷 QR 이미지가 저장됐어요'); }
+  catch(err){ showToast('용량이 커서 저장은 못했지만 표시할게요'); }
+  setVjwQr(url);
+}
+function clearVjwQr(){ localStorage.removeItem('fuk_vjw_qr'); const u=document.getElementById('vjwUpload'); if(u) u.value=''; setVjwQr(null); }
+function renderVjwQr(){ const saved=localStorage.getItem('fuk_vjw_qr'); if(saved) setVjwQr(saved); }
+(function(){
+  const inp=document.getElementById('vjwUpload'); if(!inp) return;
+  inp.addEventListener('change', function(e){
+    const file=e.target.files && e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=function(ev){
+      const raw=ev.target.result;
+      // 저장 용량 절감: 최대 1000px로 축소 후 PNG로 재인코딩 (QR 선명도 유지)
+      const im=new Image();
+      im.onload=function(){
+        try{
+          const max=1000; let w=im.width, h=im.height;
+          if(w>max||h>max){ const s=Math.min(max/w,max/h); w=Math.round(w*s); h=Math.round(h*s); }
+          const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+          cv.getContext('2d').drawImage(im,0,0,w,h);
+          saveVjwQr(cv.toDataURL('image/png'));
+        }catch(err){ saveVjwQr(raw); }
+      };
+      im.onerror=function(){ saveVjwQr(raw); };
+      im.src=raw;
+    };
+    reader.readAsDataURL(file);
+  });
+})();
+
+/* 유심 사용법 삼성/아이폰 토글 */
+function usimTab(which, btn){
+  const s=document.getElementById('usim-samsung'), i=document.getElementById('usim-iphone');
+  if(s) s.classList.toggle('hidden', which!=='samsung');
+  if(i) i.classList.toggle('hidden', which!=='iphone');
+  document.querySelectorAll('.usim-tab').forEach(b=>{
+    const on=b.dataset.usim===which;
+    b.classList.toggle('bg-toss', on);
+    b.classList.toggle('text-white', on);
+    b.classList.toggle('bg-[color:var(--card2)]', !on);
+    b.classList.toggle('text-[color:var(--sub)]', !on);
+  });
+}
+
+/* Day1 전용 공지: IC카드 충전·환불 전략 (아코디언) */
+function icStrategyCard(){
+  return `
+  <div class="transit mt-4 rounded-xl overflow-hidden" style="background:var(--card2);border-left:3px solid #3182F6">
+    <button type="button" onclick="toggleTransit(this)" class="press w-full text-left p-3.5 block">
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex-1 min-w-0">
+          <div class="font-extrabold text-[0.95rem]">💳 교통카드(IC) 충전 &amp; 환불 전략</div>
+          <div class="text-[0.8rem] text-[color:var(--sub)] mt-1 leading-relaxed">첫 충전은 <b class="text-toss">¥3,000</b> 추천! 💡 5일 차 편의점 잔액 0원 털기 전략</div>
+        </div>
+        <span class="arrow text-[color:var(--sub)] text-xs mt-1 shrink-0">▼</span>
+      </div>
+    </button>
+    <div class="t-detail-wrap"><div class="t-detail">
+      <div class="px-3.5 pb-3.5 space-y-2.5 text-[0.8rem]">
+        <div class="bg-[color:var(--card)] rounded-lg p-3">
+          <div class="font-bold text-[0.82rem]">💸 숨은 교통비</div>
+          <div class="text-[color:var(--sub)] mt-1 leading-relaxed">확정 구간 외에 야간 숙소 복귀 버스비 등을 합치면 <b class="text-[color:var(--text)]">총 ¥3,500~4,000</b> 소요 예상이에요.</div>
+        </div>
+        <div class="bg-[color:var(--card)] rounded-lg p-3">
+          <div class="font-bold text-[0.82rem]">🔋 충전 팁</div>
+          <div class="text-[color:var(--sub)] mt-1 leading-relaxed">처음부터 많이 넣지 말고 <b class="text-[color:var(--text)]">¥3,000</b> 충전 후, 모자라면 역 매표기에서 <b class="text-[color:var(--text)]">¥1,000씩 소액 재충전</b>하세요.</div>
+        </div>
+        <div class="bg-toss/10 rounded-lg p-3">
+          <div class="font-bold text-[0.82rem] text-blue-200">🔙 100% 환불 팁</div>
+          <div class="text-blue-200 mt-1 leading-relaxed">잔액이 남으면 환불 수수료 <b>¥220</b>가 차감돼요. <b>5일 차 아침 로손</b>에서 <b>공항까지 갈 지하철 요금(약 ¥260)만 남기고</b> 나머지 잔액을 간식으로 털어 쓰세요. 공항역 도착 후엔 잔액이 <b>거의 0원</b> → 창구 반납 시 수수료 없이 <b>보증금 ¥500 전액 환불</b>!</div>
+        </div>
+      </div>
+    </div></div>
+  </div>`;
+}
+
+function stopCard(d, s, i, act){
+  const t = TRANSIT[d.day+'-'+i];
+  // 교통카드가 있으면 중복되는 지하철/버스/하차 뱃지는 숨기고 도보/기타만 노출
+  let bl = s.badges||[];
+  if(t) bl = bl.filter(b=>b.t==='walk'||b.t==='info');
+  const badges = bl.map(b=>`<span class="chip ${BADGE[b.t]||BADGE.info}">${esc(b.x)}</span>`).join('');
+  const costChip = s.cost ? `<span class="chip bg-toss/15 text-toss">💴 ${esc(s.cost)}</span>` : '';
+  const openChip = s.open ? `<span class="chip bg-zinc-600/40 text-zinc-300">🕒 ${esc(s.open)}</span>` : '';
+
+  let nav;
+  if(i>0){ nav=`<a href="${dirUrl(loc(d.stops[i-1]), loc(s))}" target="_blank" rel="noopener" class="press flex-1 text-center bg-toss text-white font-bold rounded-xl py-2.5 text-[0.8rem]">🧭 길찾기</a>`; }
+  else { nav=`<a href="${searchUrl(s)}" target="_blank" rel="noopener" class="press flex-1 text-center bg-toss text-white font-bold rounded-xl py-2.5 text-[0.8rem]">🗺️ 지도 열기</a>`; }
+  const addrBtn = s.addr ? `<button onclick="copyText('${esc(s.addr).replace(/'/g,"&#39;")}',this)" class="press shrink-0 bg-[color:var(--card2)] text-[color:var(--sub)] font-bold rounded-xl px-3 py-2.5 text-[0.8rem]">📋 주소</button>` : '';
+  const nowPill = (i===act) ? `<span class="chip bg-toss text-white">🔥 지금 여기</span>` : '';
+  const ring = (i===act) ? 'ring-2 ring-toss' : '';
+
+  return `
+    <div class="card p-4 ${ring} md:h-full">
+      <!-- 헤더: 번호 + 시각 -->
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-toss flex items-center justify-center text-[0.66rem] font-extrabold text-white">${i+1}</span>
+          ${nowPill}
+        </div>
+        ${s.time?`<span class="text-toss font-extrabold text-[0.95rem]">🕐 ${esc(s.time)}</span>`:''}
+      </div>
+      <!-- 3단 텍스트 -->
+      <div class="text-[1.16rem] font-extrabold leading-snug break-keep">${esc(s.ko)}</div>
+      <div class="jp text-[0.95rem] text-toss font-bold mt-1 leading-snug break-keep">${esc(s.jp)}</div>
+      <div class="text-[0.8rem] text-[color:var(--sub)] mt-0.5">${esc(s.read)}</div>
+      <!-- 핵심 행동 -->
+      <div class="text-[0.85rem] font-semibold mt-2.5">📌 ${esc(s.act)}</div>
+      <!-- 교통/비용/운영 -->
+      <div class="flex flex-wrap gap-1.5 mt-3">${badges}${costChip}${openChip}</div>
+      <!-- 아코디언 교통 안내 카드 -->
+      ${t ? transitCard(t) : ''}
+      <!-- 길찾기 -->
+      <div class="flex gap-2 mt-3">${nav}${addrBtn}</div>
+      <!-- 현지 한마디 -->
+      <div class="mt-3 bg-[color:var(--card2)] rounded-xl p-3">
+        <div class="text-[0.64rem] text-toss font-bold mb-1">💬 여기서 쓰는 한마디</div>
+        <div class="jp font-bold text-[0.95rem] leading-snug">${esc(s.phrase.jp)}</div>
+        <div class="text-[0.78rem] text-[color:var(--sub)] mt-0.5">${esc(s.phrase.read)} <span class="text-[#5C5C62]">— ${esc(s.phrase.mean)}</span></div>
+      </div>
+      <!-- 인라인 가계부 -->
+      <div class="inline-exp mt-3 pt-3 border-t border-[color:var(--line)]" data-day="${d.day}" data-place="${esc(s.ko)}">
+        <div class="text-[0.64rem] text-[color:var(--sub)] font-bold mb-1.5">💳 여기서 지출 기입</div>
+        <div class="flex gap-1.5">
+          <input class="ie-name flex-1 min-w-0 bg-[color:var(--card2)] rounded-lg px-2.5 py-2.5 text-[0.82rem]" type="text" placeholder="내역 (예: 굿즈)">
+          <input class="ie-amt w-16 bg-[color:var(--card2)] rounded-lg px-2 py-2.5 text-[0.82rem] text-right" type="number" inputmode="numeric" pattern="[0-9]*" placeholder="¥">
+          <button onclick="addInline(this)" class="press shrink-0 bg-toss text-white font-bold rounded-lg px-3 text-[0.82rem]">기입</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderTimeline(){
+  const d=ITINERARY.find(x=>x.day===currentDay);
+  const act=activeIndex(d.day);
+  let html = `
+    <div class="mb-3 px-1">
+      <div class="inline-block bg-toss text-white font-bold px-3.5 py-1.5 rounded-full text-[0.82rem]">Day ${d.day} · ${d.date}</div>
+      <p class="text-[color:var(--sub)] text-sm mt-2 font-medium">${esc(d.title)}</p>
+    </div>`;
+  html += daySummaryCard(d);
+  if(d.day===1) html += icStrategyCard();
+  html += `<div class="rail mt-4 space-y-3 md:space-y-0 md:grid md:grid-cols-2 md:gap-3 md:items-stretch">`;
+  d.stops.forEach((s,i)=>{ html += stopCard(d,s,i,act); });
+  html += `</div>`;
+  document.getElementById('timeline').innerHTML = html;
+}
+
+/* =========================================================
+   4) 복사 + Toast
+========================================================= */
+function showToast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg;
+  t.style.opacity='1'; t.style.transform='translate(-50%,-6px)';
+  clearTimeout(window.__toast);
+  window.__toast=setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translate(-50%,0)'; },1500);
+}
+function copyText(text, btn){
+  const done=()=>{ showToast('📋 복사되었습니다 · '+text.slice(0,18)+(text.length>18?'…':'')); if(btn){const o=btn.textContent; btn.textContent='✅ 완료'; setTimeout(()=>btn.textContent=o,1200);} };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done)); }
+  else fallbackCopy(text,done);
+}
+function fallbackCopy(text, done){
+  const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand('copy'); done(); }catch(e){ showToast('복사 실패 😢'); }
+  document.body.removeChild(ta);
+}
+
+/* =========================================================
+   5) 가계부 (localStorage) — 일정 연동
+========================================================= */
+// 첫 실행 기본 지출(시드): IC카드 첫 충전. localStorage 키가 아예 없을 때만 주입 → 삭제하면 다시 안 생김.
+const SEED_EXP = [{id:1, day:1, place:"후쿠오카 공항", name:"IC카드 첫 충전 (보증금 500엔 포함)", amt:3000}];
+let expenses = JSON.parse(localStorage.getItem('fuk_exp_v2') || 'null') || SEED_EXP;
+let __eid = expenses.reduce((m,e)=>Math.max(m,e.id||0),0);
+function saveExp(){ localStorage.setItem('fuk_exp_v2', JSON.stringify(expenses)); }
+
+function addInline(btn){
+  const box=btn.closest('.inline-exp');
+  const day=parseInt(box.dataset.day,10); const place=box.dataset.place;
+  const nameEl=box.querySelector('.ie-name'), amtEl=box.querySelector('.ie-amt');
+  const name=nameEl.value.trim(); const amt=parseInt(amtEl.value,10);
+  if(!name){ nameEl.focus(); return showToast('내역을 입력해주세요'); }
+  if(!amt || amt<=0){ amtEl.focus(); return showToast('금액을 입력해주세요'); }
+  expenses.push({id:++__eid, day, place, name, amt}); saveExp(); renderMoney();
+  nameEl.value=''; amtEl.value='';
+  showToast('💳 '+place.slice(0,10)+' · ¥'+amt.toLocaleString()+' 기입 완료');
+}
+function addManual(){
+  const day=parseInt(document.getElementById('mDay').value,10);
+  const nameEl=document.getElementById('mName'), amtEl=document.getElementById('mAmt');
+  const name=nameEl.value.trim(); const amt=parseInt(amtEl.value,10);
+  if(!name){ nameEl.focus(); return showToast('내용을 입력해주세요'); }
+  if(!amt || amt<=0){ amtEl.focus(); return showToast('금액을 입력해주세요'); }
+  expenses.push({id:++__eid, day, place:'직접입력', name, amt}); saveExp(); renderMoney();
+  nameEl.value=''; amtEl.value='';
+  showToast('✅ 기입 완료 · ¥'+amt.toLocaleString());
+}
+function delExp(id){ expenses=expenses.filter(e=>e.id!==id); saveExp(); renderMoney(); }
+function clearExpenses(){ if(confirm('모든 지출 내역을 삭제할까요?')){ expenses=[]; saveExp(); renderMoney(); } }
+
+function dayLabel(d){ return (d>=1&&d<=5) ? d+'일차' : '기타'; }
+function renderMoney(){
+  const total=expenses.reduce((s,e)=>s+Number(e.amt),0);
+  document.getElementById('total').textContent='¥'+total.toLocaleString();
+  document.getElementById('totalKrw').textContent='약 '+Math.round(total*9).toLocaleString()+'원 · 100엔 ≈ 900원';
+
+  const days=[1,2,3,4,5,0];
+  document.getElementById('daySummary').innerHTML = days.map(d=>{
+    const items=expenses.filter(e=>e.day===d);
+    if(items.length===0 && d===0) return '';
+    const st=items.reduce((s,e)=>s+Number(e.amt),0);
+    const dim = items.length===0;
+    return `<div class="flex items-center justify-between px-1 py-2">
+      <span class="text-sm font-semibold ${dim?'text-[#5C5C62]':''}">${dayLabel(d)} ${items.length?`<span class="text-[color:var(--sub)] text-xs font-medium">· ${items.length}건</span>`:''}</span>
+      <span class="text-sm font-bold ${dim?'text-[#5C5C62]':'text-toss'}">¥${st.toLocaleString()}</span></div>`;
+  }).join('');
+
+  const groupBox=document.getElementById('expGroups'), empty=document.getElementById('expEmpty');
+  if(expenses.length===0){ groupBox.innerHTML=''; empty.style.display='block'; }
+  else{
+    empty.style.display='none';
+    groupBox.innerHTML = days.map(d=>{
+      const items=expenses.filter(e=>e.day===d); if(items.length===0) return '';
+      const st=items.reduce((s,e)=>s+Number(e.amt),0);
+      const rows=items.map(e=>`
+        <li class="flex items-center gap-2 px-1 py-3 border-t border-[color:var(--line)]">
+          <div class="min-w-0 flex-1">
+            <div class="text-[0.72rem] text-toss font-bold truncate">${esc(e.place)}</div>
+            <div class="text-sm font-medium truncate mt-0.5">${esc(e.name)}</div>
+          </div>
+          <span class="font-bold whitespace-nowrap">¥${Number(e.amt).toLocaleString()}</span>
+          <button onclick="delExp(${e.id})" class="press text-[#5C5C62] text-lg px-1">×</button>
+        </li>`).join('');
+      return `<div class="card p-4 md:self-start">
+        <div class="flex items-center justify-between px-1"><span class="font-extrabold">${dayLabel(d)}</span><span class="text-sm font-bold text-toss">¥${st.toLocaleString()}</span></div>
+        <ul class="mt-1">${rows}</ul></div>`;
+    }).join('');
+  }
+}
+document.getElementById('mAmt').addEventListener('keydown',e=>{ if(e.key==='Enter') addManual(); });
+
+/* =========================================================
+   6) 준비물 체크리스트
+========================================================= */
+const DEFAULT_CHECK = ["여권","항공권 모바일 티켓","숙소 바우처/체크인 PIN","엔화 현금","신용/체크카드","유심 또는 eSIM","보조배터리","여권 사본","양산 겸용 우산","손풍기","상비약","멀티충전기","얇은 긴팔 겉옷"];
+let checkItems = JSON.parse(localStorage.getItem('fuk_check_v2') || 'null') || DEFAULT_CHECK.map(t=>({t,done:false}));
+function saveCheck(){ localStorage.setItem('fuk_check_v2', JSON.stringify(checkItems)); }
+function renderCheck(){
+  document.getElementById('checkList').innerHTML = checkItems.map((it,i)=>`
+    <li class="flex items-center gap-3 py-2.5 border-b border-[color:var(--line)] last:border-0">
+      <button onclick="toggleCheck(${i})" class="press shrink-0 w-6 h-6 rounded-lg border-2 ${it.done?'bg-toss border-toss':'border-[color:var(--card2)] bg-transparent'} flex items-center justify-center">${it.done?'<span class="text-white text-sm">✓</span>':''}</button>
+      <span class="flex-1 text-sm ${it.done?'checked':''}" onclick="toggleCheck(${i})">${esc(it.t)}</span>
+      <button onclick="delCheck(${i})" class="press text-[#5C5C62] text-lg px-1">×</button>
+    </li>`).join('');
+  document.getElementById('checkCount').textContent = `${checkItems.filter(x=>x.done).length}/${checkItems.length}`;
+}
+function toggleCheck(i){ checkItems[i].done=!checkItems[i].done; saveCheck(); renderCheck(); }
+function delCheck(i){ checkItems.splice(i,1); saveCheck(); renderCheck(); }
+function addCheckItem(){ const inp=document.getElementById('newItem'); const v=inp.value.trim(); if(!v) return; checkItems.push({t:v,done:false}); inp.value=''; saveCheck(); renderCheck(); }
+document.getElementById('newItem').addEventListener('keydown',e=>{ if(e.key==='Enter') addCheckItem(); });
+
+/* =========================================================
+   7) D-day
+========================================================= */
+function renderDday(){
+  const start=new Date(2026,6,7), end=new Date(2026,6,11);
+  const now=new Date(); const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const box=document.getElementById('dayBadge'); const dayMs=86400000;
+  if(today<start){ const dd=Math.round((start-today)/dayMs);
+    box.innerHTML=`<div class="text-[0.6rem] text-[color:var(--sub)] font-bold leading-none">여행까지</div><div class="font-extrabold text-toss text-xl leading-tight mt-1">D-${dd}</div>`;
+  } else if(today>=start && today<=end){ const n=Math.round((today-start)/dayMs)+1;
+    box.innerHTML=`<div class="text-[0.6rem] text-[color:var(--sub)] font-bold leading-none">여행중</div><div class="font-extrabold text-toss text-xl leading-tight mt-1">Day ${n}</div>`;
+    currentDay=Math.min(n,5);
+  } else {
+    box.innerHTML=`<div class="text-[0.6rem] text-[color:var(--sub)] font-bold leading-none">추억 🌸</div><div class="font-extrabold text-toss text-base leading-tight mt-1">종료</div>`;
+  }
+}
+
+/* ===== INIT ===== */
+renderDday();
+renderChips();
+renderTimeline();
+renderMoney();
+renderCheck();
+renderVjwQr();
+</script>
+</body>
+</html>
