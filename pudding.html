@@ -1,0 +1,482 @@
+<meta charset="UTF-8">
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>푸딩 도감 🍮</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<style>
+:root{
+  --bg:#FFFDF9; --card:#FFFFFF; --cream:#FBF0D3; --cream-soft:#FEF7E6;
+  --caramel:#C8863E; --caramel-dark:#9A6A3A; --caramel-deep:#6E4A28;
+  --text:#4A3728; --sub:#8A7660; --line:#F0E6D2; --ja:#A85A1E;
+  --shadow:0 6px 20px rgba(150,110,60,.10);
+  --shadow-sm:0 2px 8px rgba(150,110,60,.08);
+  --app:480px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:
+  radial-gradient(120% 60% at 50% 0%, #FBEFD6 0%, #FFFDF9 55%);
+  min-height:100%;}
+body{
+  font-family:'Pretendard Variable','Pretendard','Apple SD Gothic Neo','Malgun Gothic',-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN',sans-serif;
+  color:var(--text); line-height:1.45; -webkit-font-smoothing:antialiased;
+  display:flex; justify-content:center; align-items:flex-start;
+}
+#app{
+  width:100%; max-width:var(--app); min-height:100vh; position:relative;
+  padding-bottom:96px; background:transparent;
+}
+/* ---------- 공통 리턴바 (허브 복귀) ---------- */
+.returnbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+  height:44px;padding:0 16px;background:var(--caramel-deep);color:#fff;text-decoration:none;font-family:inherit;
+  transition:opacity .15s ease}
+.returnbar:active{opacity:.82}
+.rb-back{display:flex;align-items:center;gap:6px;font-size:14.5px;font-weight:800}
+.rb-arrow{font-size:17px;line-height:1}
+.rb-zone{font-size:12.5px;font-weight:800;opacity:.9}
+/* ---------- header ---------- */
+header{
+  position:sticky; top:44px; z-index:20;
+  padding:20px 20px 14px;
+  background:linear-gradient(180deg,#FFFDF9 70%,rgba(255,253,249,0));
+}
+.h-title{font-size:24px;font-weight:800;letter-spacing:-.5px;display:flex;align-items:center;gap:7px}
+.h-sub{font-size:13px;color:var(--sub);margin-top:2px;font-weight:500}
+/* ---------- views ---------- */
+.view{display:none;padding:0 16px;animation:fade .32s ease}
+.view.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- collection progress ---------- */
+.collect{
+  background:var(--card);border-radius:20px;padding:16px 18px;box-shadow:var(--shadow-sm);
+  margin-bottom:14px;border:1px solid var(--line);
+}
+.collect-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+.collect-top b{font-size:15px;font-weight:700}
+.collect-top .cnt{font-size:14px;color:var(--caramel);font-weight:800}
+.bar{height:9px;background:var(--cream);border-radius:99px;overflow:hidden}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,#E7B25E,var(--caramel));border-radius:99px;transition:width .5s cubic-bezier(.3,1,.4,1)}
+
+/* ---------- filter chips ---------- */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;padding:8px 14px;border-radius:99px;font-size:13px;font-weight:700;
+  background:var(--card);color:var(--sub);border:1px solid var(--line);
+  transition:transform .12s ease,background .2s,color .2s;cursor:pointer;white-space:nowrap;
+}
+.chip.on{background:var(--caramel);color:#fff;border-color:var(--caramel)}
+.chip.star.on{background:#E7B25E;border-color:#E7B25E}
+.chip:active{transform:scale(.94)}
+
+/* ---------- group label ---------- */
+.glabel{font-size:12px;font-weight:800;color:var(--caramel-dark);margin:16px 4px 8px;letter-spacing:.3px}
+
+/* ---------- pudding card ---------- */
+.pcard{background:var(--card);border-radius:18px;box-shadow:var(--shadow-sm);border:1px solid var(--line);
+  margin-bottom:11px;overflow:hidden;transition:box-shadow .2s}
+.pcard.open{box-shadow:var(--shadow)}
+.pcard-main{display:flex;align-items:center;gap:13px;padding:14px 15px;cursor:pointer;transition:transform .12s ease}
+.pcard-main:active{transform:scale(.985)}
+.thumb{flex:0 0 50px;width:50px;height:50px;border-radius:14px;
+  background:radial-gradient(circle at 50% 35%,#FCE5B8,#F3D08A);
+  display:flex;align-items:center;justify-content:center;font-size:26px}
+.pinfo{flex:1;min-width:0}
+.names{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.ko{font-size:13px;font-weight:600;color:#5C4A38;letter-spacing:-.2px}
+.subline{display:flex;align-items:center;gap:7px;margin-top:3px;flex-wrap:wrap}
+.tags{display:flex;gap:4px;flex:0 0 auto;margin-top:2px}
+.tg{font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:8px;white-space:nowrap}
+.tg.star{background:#FDF1D2;color:#C58A2E}
+.tg.air{background:#EAF3EA;color:#5B8A5B}
+.tg.hold{background:#FBE9DC;color:#B9713F}
+.ja{font-size:18px;font-weight:800;color:var(--ja);letter-spacing:-.2px;line-height:1.25;flex:1;min-width:0}
+.pron{font-size:12.5px;color:var(--caramel-deep);font-weight:700;background:var(--cream);padding:2px 8px;border-radius:8px}
+.note{font-size:12.5px;color:var(--caramel-deep);font-weight:600;margin-top:5px}
+.chev{flex:0 0 auto;color:#D9C9AE;font-size:16px;transition:transform .3s ease}
+.pcard.open .chev{transform:rotate(180deg);color:var(--caramel)}
+/* accordion */
+.detail{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s cubic-bezier(.3,1,.4,1)}
+.pcard.open .detail{grid-template-rows:1fr}
+.detail-in{overflow:hidden}
+.detail-pad{padding:2px 15px 15px 78px}
+.spec{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
+.spec span{font-size:12px;background:var(--cream-soft);color:var(--caramel-deep);padding:5px 10px;border-radius:9px;font-weight:600}
+.addbtn{width:100%;padding:12px;border:none;border-radius:13px;background:var(--caramel);color:#fff;
+  font-size:14px;font-weight:800;cursor:pointer;transition:transform .12s ease,background .2s;font-family:inherit}
+.addbtn:active{transform:scale(.97);background:var(--caramel-dark)}
+.addbtn.done{background:#EADFC7;color:var(--caramel-dark)}
+
+/* ---------- 내 구매 ---------- */
+.sumbar{display:flex;gap:10px;margin-bottom:14px}
+.sumbox{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 15px;box-shadow:var(--shadow-sm)}
+.sumbox .k{font-size:11.5px;color:var(--sub);font-weight:700}
+.sumbox .v{font-size:19px;font-weight:800;margin-top:3px}
+.sumbox .v small{font-size:12px;color:var(--sub);font-weight:700}
+.sortrow{display:flex;gap:8px;margin-bottom:12px}
+.sortbtn{flex:1;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--card);
+  font-size:13px;font-weight:800;color:var(--sub);cursor:pointer;transition:transform .12s,background .2s,color .2s;font-family:inherit}
+.sortbtn.on{background:var(--caramel-deep);color:#fff;border-color:var(--caramel-deep)}
+.sortbtn:active{transform:scale(.96)}
+
+.datehead{display:flex;justify-content:space-between;align-items:baseline;margin:18px 4px 9px}
+.datehead .d{font-size:14px;font-weight:800;color:var(--caramel-deep)}
+.datehead .s{font-size:12.5px;font-weight:800;color:var(--caramel)}
+
+.buy{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin-bottom:10px;box-shadow:var(--shadow-sm);animation:fade .3s ease}
+.buy-top{display:flex;align-items:center;gap:11px}
+.buy .th{flex:0 0 40px;width:40px;height:40px;border-radius:11px;background:radial-gradient(circle at 50% 35%,#FCE5B8,#F3D08A);display:flex;align-items:center;justify-content:center;font-size:21px}
+.buy .nm{flex:1;min-width:0}
+.buy .nm b{font-size:14.5px;font-weight:800;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.buy .nm span{font-size:11.5px;color:var(--sub);font-weight:600}
+.dd{font-size:11px;font-weight:800;padding:4px 9px;border-radius:9px;white-space:nowrap;flex:0 0 auto}
+.dd.safe{background:#EAF3EA;color:#5B8A5B}
+.dd.warn{background:#FCEBD3;color:#C58A2E}
+.dd.today{background:#FBE0D5;color:#D06A3E}
+.dd.over{background:#EFE7DD;color:#A99883}
+.dd.none{background:#F3E3C6;color:#9A6A3A}
+.del{flex:0 0 auto;border:none;background:none;color:#D9C9AE;font-size:16px;cursor:pointer;padding:4px;transition:transform .12s}
+.del:active{transform:scale(.85)}
+.buy-fields{display:flex;gap:8px;margin-top:11px}
+.fld{flex:1}
+.fld label{font-size:10.5px;color:var(--sub);font-weight:700;display:block;margin-bottom:4px;padding-left:3px}
+.fld input{width:100%;border:1px solid var(--line);background:var(--cream-soft);border-radius:11px;
+  padding:9px 10px;font-size:13px;font-weight:700;color:var(--text);font-family:inherit;outline:none;transition:border .2s,background .2s}
+.fld input:focus{border-color:var(--caramel);background:#fff}
+.fld.price{flex:0 0 100px}
+
+/* ---------- 정산 ---------- */
+.total{background:linear-gradient(135deg,var(--caramel),var(--caramel-dark));color:#fff;border-radius:22px;
+  padding:24px 22px;box-shadow:0 10px 24px rgba(154,106,58,.28);margin-bottom:14px}
+.total .lbl{font-size:13px;font-weight:700;opacity:.9}
+.total .yen{font-size:34px;font-weight:800;letter-spacing:-1px;margin-top:5px}
+.total .krw{font-size:15px;font-weight:700;opacity:.92;margin-top:3px}
+.total .meta{margin-top:14px;font-size:12.5px;opacity:.9;display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,.25);padding-top:12px}
+.rate{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:space-between}
+.rate .rl{font-size:13px;font-weight:700;color:var(--sub)}
+.rate .ri{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:800}
+.rate input{width:64px;border:1px solid var(--line);background:var(--cream-soft);border-radius:10px;padding:7px 8px;font-size:14px;font-weight:800;text-align:right;color:var(--text);font-family:inherit;outline:none}
+.rate input:focus{border-color:var(--caramel);background:#fff}
+.brk{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:6px 18px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.brk h4{font-size:12px;font-weight:800;color:var(--caramel-dark);padding:13px 0 4px;letter-spacing:.3px}
+.brow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-top:1px solid var(--line);font-size:14px}
+.brow:first-of-type{border-top:none}
+.brow .bn{font-weight:700}
+.brow .bv{font-weight:800}
+.brow .bv small{color:var(--sub);font-weight:700;font-size:11.5px;margin-left:5px}
+
+/* ---------- empty ---------- */
+.empty{text-align:center;padding:70px 20px;color:var(--sub)}
+.empty .e{font-size:44px;margin-bottom:14px}
+.empty b{display:block;font-size:16px;color:var(--caramel-dark);font-weight:800;margin-bottom:6px}
+.empty p{font-size:13.5px;line-height:1.6}
+
+/* ---------- bottom nav ---------- */
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:var(--app);
+  background:rgba(255,253,249,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);display:flex;padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:30}
+.tab{flex:1;position:relative;background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:7px 0;cursor:pointer;color:#CBBBA3;transition:transform .14s ease,color .2s;font-family:inherit}
+.tab:active{transform:scale(.9)}
+.tab .ic{font-size:22px;line-height:1;filter:grayscale(1) opacity(.55);transition:filter .2s,transform .2s}
+.tab .tl{font-size:11px;font-weight:800}
+.tab.on{color:var(--caramel-deep)}
+.tab.on .ic{filter:none;transform:translateY(-1px) scale(1.05)}
+.tab .badge{position:absolute;top:3px;left:calc(50% + 5px);min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:var(--caramel);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 2px 5px rgba(154,106,58,.35)}
+.tab .badge:empty{display:none}
+
+/* ---------- toast ---------- */
+#toast{position:fixed;bottom:104px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--caramel-deep);color:#fff;padding:12px 20px;border-radius:14px;font-size:13.5px;font-weight:700;
+  box-shadow:0 8px 20px rgba(110,74,40,.35);opacity:0;pointer-events:none;transition:.32s cubic-bezier(.3,1,.4,1);z-index:40;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(min-width:600px){
+  body{padding:24px 0}
+  #app{box-shadow:0 20px 60px rgba(150,110,60,.14);border-radius:32px;overflow:hidden;min-height:calc(100vh - 48px);background:var(--bg)}
+  header{border-radius:32px 32px 0 0}
+}
+@media(min-width:768px){
+  html{font-size:17px}
+  .h-title{font-size:26px}
+  .ja{font-size:19px}
+  .ko{font-size:13.5px}
+  .note{font-size:13px}
+}
+@media(min-width:1000px){
+  :root{--app:768px}
+  #dexList{display:grid;grid-template-columns:1fr 1fr;gap:11px;align-items:start}
+  #dexList .glabel{grid-column:1/-1;margin-top:12px}
+  .pcard{margin-bottom:0}
+}
+</style>
+
+<div id="app">
+  <a class="returnbar" id="returnbar" href="index.html?tab=guide">
+    <span class="rb-back"><span class="rb-arrow">←</span> 여행 대시보드</span>
+    <span class="rb-zone">🍮 푸딩 도감</span>
+  </a>
+  <header>
+    <div class="h-title">🍮 푸딩 도감</div>
+    <div class="h-sub">일본 편의점 밀봉 푸딩 · 사서 · 담고 · 먹는순서까지</div>
+  </header>
+
+  <!-- ============ 도감 ============ -->
+  <section class="view active" id="v-dex">
+    <div class="collect">
+      <div class="collect-top"><b>모은 푸딩</b><span class="cnt" id="collectCnt">0 / 20</span></div>
+      <div class="bar"><i id="collectBar" style="width:0%"></i></div>
+    </div>
+    <div class="chips" id="chips">
+      <div class="chip star" data-f="creamy">⭐ 크리미</div>
+      <div class="chip on" data-f="전체">전체</div>
+      <div class="chip" data-f="공통">공통</div>
+      <div class="chip" data-f="로손">로손</div>
+      <div class="chip" data-f="세븐">세븐</div>
+      <div class="chip" data-f="패미마">패미마</div>
+    </div>
+    <div id="dexList"></div>
+  </section>
+
+  <!-- ============ 내 구매 ============ -->
+  <section class="view" id="v-buy">
+    <div class="sumbar">
+      <div class="sumbox"><div class="k">담은 푸딩</div><div class="v" id="buyCount">0<small>개</small></div></div>
+      <div class="sumbox"><div class="k">✈️ 위탁 필요</div><div class="v" id="buyHold">0<small>개</small></div></div>
+    </div>
+    <div class="sortrow">
+      <button class="sortbtn on" data-sort="date">📅 날짜순</button>
+      <button class="sortbtn" data-sort="expire">🕒 먹는순서</button>
+    </div>
+    <div id="buyList"></div>
+  </section>
+
+  <!-- ============ 정산 ============ -->
+  <section class="view" id="v-pay">
+    <div class="total">
+      <div class="lbl">푸딩에 쓴 돈</div>
+      <div class="yen" id="totYen">¥0</div>
+      <div class="krw" id="totKrw">≈ 0원</div>
+      <div class="meta"><span id="totCnt">0개 구매</span><span id="totAvg">개당 ¥0</span></div>
+    </div>
+    <div class="rate">
+      <div class="rl">환율 (100엔 =)</div>
+      <div class="ri"><input id="rateInput" type="number" value="920" inputmode="numeric">원</div>
+    </div>
+    <div class="brk" id="brkStore"><h4>🏪 편의점별</h4></div>
+    <div class="brk" id="brkDate"><h4>📅 날짜별</h4></div>
+  </section>
+
+  <nav>
+    <button class="tab on" data-tab="dex"><span class="ic">🍮</span><span class="tl">도감</span></button>
+    <button class="tab" data-tab="buy"><span class="ic">🛒</span><span class="tl">내 구매</span><span class="badge" id="navBuyBadge"></span></button>
+    <button class="tab" data-tab="pay"><span class="ic">💰</span><span class="tl">정산</span></button>
+  </nav>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ================= 데이터 ================= */
+const PUD=[
+ // 공통
+ {id:'p01',store:'공통',ko:'글리코 푸칭 푸딩',ja:'プッチンプリン',pron:'풋친푸린',creamy:false,price:140,ml:67,note:'톡 눌러빼는 커스터드+캐러멜, 정석'},
+ {id:'p02',store:'공통',ko:'글리코 빅 푸칭',ja:'Bigプッチンプリン',pron:'빅쿠 풋친푸린',creamy:false,price:165,ml:160,note:'대용량 160g 버전'},
+ {id:'p03',store:'공통',ko:'모리나가 야끼 푸딩',ja:'焼プリン',pron:'야키푸린',creamy:false,price:150,ml:140,note:'겉을 구운 크렘브륄레풍, 판매 1위'},
+ {id:'p04',store:'공통',ko:'모리나가 우유 푸딩',ja:'牛乳プリン',pron:'규뉴푸린',creamy:false,price:120,ml:105,note:'리얼 우유맛·칼슘, 아이 간식'},
+ {id:'p05',store:'공통',ko:'메이토 나메라카',ja:'なめらかプリン',pron:'나메라카푸린',creamy:true,price:130,ml:105,note:'부드러운 커스터드 스테디셀러'},
+ {id:'p06',store:'공통',ko:'오하요 우유 푸딩',ja:'牛乳プリン',pron:'규뉴푸린',creamy:false,price:140,ml:105,note:'3사 공통, 진한 우유'},
+ {id:'p07',store:'공통',ko:'오하요 신선란 구이',ja:'新鮮卵のこんがり焼プリン',pron:'콘가리야키푸린',creamy:false,price:160,ml:110,note:'노릇 구운 향, 진한 계란'},
+ // 로손
+ {id:'p08',store:'로손',ko:'쟈지 우유 푸딩',ja:'ジャージー牛乳プリン',pron:'자지 규뉴푸린',creamy:false,price:250,ml:115,note:'2층(우유+크림), 한국인 최애'},
+ {id:'p09',store:'로손',ko:'로얄 밀크티 푸딩',ja:'ロイヤルミルクティープリン',pron:'로이야루 미루쿠티',creamy:false,price:260,ml:110,note:'홍차향, 밀크티와 함께 굿'},
+ {id:'p10',store:'로손',ko:'나메라카 푸딩',ja:'なめらかプリン',pron:'나메라카푸린',creamy:true,price:180,ml:105,note:'말랑가루처럼 초크리미'},
+ {id:'p11',store:'로손',ko:'토로리 크림온 푸딩',ja:'とろ~りクリームonプリン',pron:'토로리 쿠리무온',creamy:true,price:270,ml:130,note:'크림 얹은 크리미'},
+ // 세븐
+ {id:'p12',store:'세븐',ko:'키미다케노 푸딩',ja:'きみだけのプリン',pron:'키미다케노푸린',creamy:false,price:178,ml:95,note:'"너만의 푸딩", 노른자 진한 커스터드'},
+ {id:'p13',store:'세븐',ko:'카스타드 푸딩',ja:'カスタードプリン',pron:'카스타도푸린',creamy:false,price:240,ml:140,note:'정통 커스터드, 진한 계란'},
+ {id:'p14',store:'세븐',ko:'나메라카 푸딩',ja:'贅沢なめらかプリン',pron:'제타쿠 나메라카',creamy:true,price:170,ml:105,note:'사치스러운 크리미'},
+ {id:'p15',store:'세븐',ko:'사쿠라 밀크(한정)',ja:'さくらミルクプリン',pron:'사쿠라 미루쿠',creamy:false,price:230,ml:120,note:'벚꽃 시즌, 은은한 사쿠라'},
+ {id:'p16',store:'세븐',ko:'안닌토후',ja:'とろける杏仁豆腐',pron:'토로케루 안닌도후',creamy:true,price:170,ml:170,note:'행인두부, 아몬드향 부드러움'},
+ // 패미마
+ {id:'p17',store:'패미마',ko:'가마다시 토로케루',ja:'窯出しとろけるプリン',pron:'카마다시 토로케루',creamy:true,price:158,ml:170,note:'가마에서 꺼낸 살살녹는, 알바생 추천'},
+ {id:'p18',store:'패미마',ko:'생토로 푸딩',ja:'生とろプリン',pron:'나마토로푸린',creamy:true,price:158,ml:170,note:'젤라틴 없이 생크림 식감, 우유맛 찐'},
+ {id:'p19',store:'패미마',ko:'수플레 푸딩',ja:'スフレプリン',pron:'스후레푸린',creamy:false,price:260,ml:120,note:'폭신 수플레+푸딩'},
+ {id:'p20',store:'패미마',ko:'이탈리아 밤 몽블랑',ja:'イタリア栗のモンブランプリン',pron:'이타리아구리노 몬부란',creamy:false,price:290,ml:110,note:'밤 몽블랑 크림 토핑'},
+];
+const byId=id=>PUD.find(p=>p.id===id);
+const STORE_ORDER=['공통','로손','세븐','패미마'];
+const STORE_LABEL={공통:'🟡 공통 (제조사)','로손':'🔵 로손 (Uchi Café)','세븐':'🟢 세븐일레븐','패미마':'🔴 패밀리마트'};
+const canCarry=ml=>ml<=100;
+
+/* ================= 상태 ================= */
+const LS='pudding_app_v1';
+let state=load();
+function load(){try{const d=JSON.parse(localStorage.getItem(LS));if(d)return d;}catch(e){}return{buys:[],rate:920,sort:'date',filter:'전체',creamy:false};}
+function save(){localStorage.setItem(LS,JSON.stringify(state));}
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function uid(){return 'b'+Math.random().toString(36).slice(2,9);}
+
+/* ================= 도감 ================= */
+function renderDex(){
+  const list=document.getElementById('dexList');
+  let items=PUD.slice();
+  if(state.filter!=='전체') items=items.filter(p=>p.store===state.filter);
+  if(state.creamy) items=items.filter(p=>p.creamy);
+  // 그룹핑
+  let html='';
+  const groups=state.filter==='전체'?STORE_ORDER:[state.filter];
+  const owned=new Set(state.buys.map(b=>b.pid));
+  groups.forEach(g=>{
+    const arr=items.filter(p=>p.store===g);
+    if(!arr.length)return;
+    html+=`<div class="glabel">${STORE_LABEL[g]}</div>`;
+    arr.forEach(p=>{
+      const air=canCarry(p.ml);
+      const has=owned.has(p.id);
+      html+=`<div class="pcard" data-id="${p.id}">
+        <div class="pcard-main" onclick="toggleCard(this)">
+          <div class="thumb">🍮</div>
+          <div class="pinfo">
+            <div class="names"><span class="ja">${p.ja}</span>
+              <span class="tags">${p.creamy?'<span class="tg star">⭐</span>':''}
+                <span class="tg ${air?'air':'hold'}">${air?'✈️기내':'✈️위탁'}</span></span></div>
+            <div class="subline"><span class="pron">${p.pron}</span><span class="ko">${p.ko}</span></div>
+            <div class="note">${p.note}</div>
+          </div>
+          <div class="chev">▾</div>
+        </div>
+        <div class="detail"><div class="detail-in"><div class="detail-pad">
+          <div class="spec">
+            <span>💴 ¥${p.price}</span><span>🥄 ${p.ml}ml</span>
+            <span>${air?'✈️ 기내반입 가능':'✈️ 위탁수하물 (100ml 초과)'}</span>
+            ${p.creamy?'<span>⭐ 크리미 타입</span>':''}
+          </div>
+          <button class="addbtn ${has?'done':''}" onclick="addBuy('${p.id}')">${has?'✓ 담음 · 하나 더 담기':'+ 내 구매에 담기'}</button>
+        </div></div></div>
+      </div>`;
+    });
+  });
+  list.innerHTML=html||`<div class="empty"><div class="e">🍮</div><b>해당 푸딩이 없어요</b><p>필터를 바꿔보세요</p></div>`;
+  // 수집률
+  const cnt=owned.size;
+  document.getElementById('collectCnt').textContent=cnt+' / 20';
+  document.getElementById('collectBar').style.width=(cnt/20*100)+'%';
+}
+function toggleCard(el){el.parentElement.classList.toggle('open');}
+
+/* ================= 담기 ================= */
+function addBuy(pid){
+  state.buys.push({uid:uid(),pid:pid,bought:today(),price:byId(pid).price,expire:''});
+  save();renderDex();renderBuy();renderPay();
+  toast('🛒 담았어요! 소비기한을 넣으면 먹는순서가 정렬돼요');
+}
+
+/* ================= 내 구매 ================= */
+function ddInfo(expire){
+  if(!expire)return{cls:'none',txt:'날짜 입력'};
+  const t=new Date(today()),e=new Date(expire);
+  const diff=Math.round((e-t)/86400000);
+  if(diff<0)return{cls:'over',txt:'지남'};
+  if(diff===0)return{cls:'today',txt:'오늘!'};
+  if(diff<=2)return{cls:'warn',txt:'D-'+diff};
+  return{cls:'safe',txt:'D-'+diff};
+}
+function buyRow(b){
+  const p=byId(b.pid),dd=ddInfo(b.expire),air=canCarry(p.ml);
+  return `<div class="buy">
+    <div class="buy-top">
+      <div class="th">🍮</div>
+      <div class="nm"><b>${p.ja}</b><span>${p.ko} · ${air?'✈️기내':'✈️위탁'} · ${p.store}</span></div>
+      <div class="dd ${dd.cls}">${dd.txt}</div>
+      <button class="del" onclick="delBuy('${b.uid}')">✕</button>
+    </div>
+    <div class="buy-fields">
+      <div class="fld"><label>산 날짜</label><input type="date" value="${b.bought}" onchange="upd('${b.uid}','bought',this.value)"></div>
+      <div class="fld"><label>소비기한</label><input type="date" value="${b.expire}" onchange="upd('${b.uid}','expire',this.value)"></div>
+      <div class="fld price"><label>가격(¥)</label><input type="number" inputmode="numeric" value="${b.price}" onchange="upd('${b.uid}','price',+this.value||0)"></div>
+    </div>
+  </div>`;
+}
+function renderBuy(){
+  const list=document.getElementById('buyList');
+  document.getElementById('buyCount').innerHTML=state.buys.length+'<small>개</small>';
+  document.getElementById('buyHold').innerHTML=state.buys.filter(b=>!canCarry(byId(b.pid).ml)).length+'<small>개</small>';
+  document.getElementById('navBuyBadge').textContent=state.buys.length||'';
+  if(!state.buys.length){list.innerHTML=`<div class="empty"><div class="e">🛒</div><b>아직 담은 푸딩이 없어요</b><p>도감에서 <b>+담기</b>를 누르면<br>여기로 쏙 들어와요 🍮</p></div>`;return;}
+  let html='';
+  if(state.sort==='expire'){
+    const arr=state.buys.slice().sort((a,b)=>{
+      if(!a.expire)return 1;if(!b.expire)return -1;return a.expire<b.expire?-1:1;});
+    html=arr.map(buyRow).join('');
+  }else{
+    const map={};
+    state.buys.forEach(b=>{(map[b.bought]=map[b.bought]||[]).push(b);});
+    Object.keys(map).sort((a,b)=>a<b?1:-1).forEach(d=>{
+      const sum=map[d].reduce((s,b)=>s+b.price,0);
+      html+=`<div class="datehead"><span class="d">📅 ${fmtDate(d)}</span><span class="s">${map[d].length}개 · ¥${sum.toLocaleString()}</span></div>`;
+      html+=map[d].map(buyRow).join('');
+    });
+  }
+  list.innerHTML=html;
+}
+function fmtDate(d){if(!d)return'날짜 미정';const[y,m,dd]=d.split('-');return `${+m}월 ${+dd}일`;}
+function upd(uid,f,v){const b=state.buys.find(x=>x.uid===uid);if(!b)return;b[f]=v;save();renderBuy();renderPay();}
+function delBuy(uid){state.buys=state.buys.filter(x=>x.uid!==uid);save();renderBuy();renderPay();renderDex();}
+
+/* ================= 정산 ================= */
+function renderPay(){
+  const tot=state.buys.reduce((s,b)=>s+b.price,0);
+  const krw=Math.round(tot*state.rate/100);
+  document.getElementById('totYen').textContent='¥'+tot.toLocaleString();
+  document.getElementById('totKrw').textContent='≈ '+krw.toLocaleString()+'원';
+  document.getElementById('totCnt').textContent=state.buys.length+'개 구매';
+  document.getElementById('totAvg').textContent='개당 ¥'+(state.buys.length?Math.round(tot/state.buys.length).toLocaleString():0);
+  document.getElementById('rateInput').value=state.rate;
+  // 편의점별
+  const bs={};state.buys.forEach(b=>{const s=byId(b.pid).store;bs[s]=(bs[s]||0)+b.price;});
+  let sh='<h4>🏪 편의점별</h4>';
+  STORE_ORDER.filter(s=>bs[s]).forEach(s=>{sh+=brow(s,bs[s]);});
+  if(!Object.keys(bs).length)sh+=emptyRow();
+  document.getElementById('brkStore').innerHTML=sh;
+  // 날짜별
+  const bd={};state.buys.forEach(b=>{bd[b.bought]=(bd[b.bought]||0)+b.price;});
+  let dh='<h4>📅 날짜별</h4>';
+  Object.keys(bd).sort().forEach(d=>{dh+=brow(fmtDate(d),bd[d]);});
+  if(!Object.keys(bd).length)dh+=emptyRow();
+  document.getElementById('brkDate').innerHTML=dh;
+}
+function brow(n,yen){const krw=Math.round(yen*state.rate/100);return `<div class="brow"><span class="bn">${n}</span><span class="bv">¥${yen.toLocaleString()}<small>≈${krw.toLocaleString()}원</small></span></div>`;}
+function emptyRow(){return `<div class="brow"><span class="bn" style="color:var(--sub);font-weight:600">구매 내역이 없어요</span></div>`;}
+
+/* ================= 탭 / 필터 / 토스트 ================= */
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.dataset.tab===t));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('v-'+t).classList.add('active');
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+document.getElementById('chips').onclick=e=>{
+  const c=e.target.closest('.chip');if(!c)return;
+  if(c.dataset.f==='creamy'){state.creamy=!state.creamy;c.classList.toggle('on',state.creamy);}
+  else{state.filter=c.dataset.f;document.querySelectorAll('.chip:not(.star)').forEach(x=>x.classList.toggle('on',x===c));}
+  save();renderDex();
+};
+document.querySelectorAll('.sortbtn').forEach(b=>b.onclick=()=>{
+  state.sort=b.dataset.sort;save();
+  document.querySelectorAll('.sortbtn').forEach(x=>x.classList.toggle('on',x===b));
+  renderBuy();
+});
+document.getElementById('rateInput').onchange=function(){state.rate=+this.value||920;save();renderPay();};
+let toastT;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),1600);}
+
+/* ================= 초기화 ================= */
+document.querySelectorAll('.chip:not(.star)').forEach(x=>x.classList.toggle('on',x.dataset.f===state.filter));
+document.querySelector('.chip.star').classList.toggle('on',state.creamy);
+document.querySelectorAll('.sortbtn').forEach(x=>x.classList.toggle('on',x.dataset.sort===state.sort));
+renderDex();renderBuy();renderPay();
+
+/* 허브 복귀 링크: 떠나온 탭(?from)으로 정확히 돌아가기 */
+(function(){const from=new URLSearchParams(location.search).get('from')||'guide';
+  const rb=document.getElementById('returnbar');if(rb)rb.href='index.html?tab='+from;})();
+</script>

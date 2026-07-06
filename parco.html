@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>후쿠오카 파르코 텐진 · 층별 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;700&family=Archivo:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<style>
+  :root{
+    --ink:#141018;
+    --ink-2:#1d1824;
+    --panel:#241d2e;
+    --panel-line:#372c46;
+    --cream:#F4EFE9;
+    --muted:#a99fb4;
+    --coral:#FF3B57;
+    --coral-soft:#ff6d81;
+    --gold:#FFC94B;
+    --mint:#4BE0C0;
+    --radius:14px;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Pretendard Variable","Pretendard","Noto Sans KR","Noto Sans JP",sans-serif;
+    background:
+      radial-gradient(1200px 700px at 80% -10%, #2a1f38 0%, transparent 55%),
+      radial-gradient(900px 600px at -10% 20%, #241a2c 0%, transparent 50%),
+      var(--ink);
+    color:var(--cream);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    padding:0 20px 64px;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto}
+
+  /* ---------- 공통 리턴바 (허브 복귀) ---------- */
+  .returnbar{position:sticky;top:0;z-index:50;margin:0 -20px 4px;padding:0 16px;height:44px;
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--ink-2);border-bottom:1px solid var(--panel-line);
+    color:var(--cream);text-decoration:none}
+  .returnbar:active{opacity:.85}
+  .rb-back{display:flex;align-items:center;gap:6px;font-size:14.5px;font-weight:700}
+  .rb-arrow{font-size:17px;color:var(--coral-soft)}
+  .rb-zone{font-size:12.5px;font-weight:700;color:var(--coral-soft)}
+
+  /* ---------- Header ---------- */
+  header{padding:44px 0 22px;border-bottom:1px solid var(--panel-line)}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;letter-spacing:.22em;font-weight:700;
+    color:var(--coral-soft);text-transform:uppercase;margin-bottom:14px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--coral)}
+  h1{
+    font-family:"Archivo","Noto Sans KR",sans-serif;
+    font-weight:900;font-size:clamp(30px,6vw,54px);
+    line-height:1.02;letter-spacing:-.01em;
+  }
+  h1 .jp{display:block;font-family:"Noto Sans JP",sans-serif;font-weight:700;
+    font-size:clamp(13px,2.4vw,17px);color:var(--muted);letter-spacing:.14em;margin-top:10px}
+  .lede{color:var(--muted);max-width:640px;margin-top:16px;font-size:15px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .chip{
+    font-size:12.5px;font-weight:500;color:var(--cream);
+    background:var(--ink-2);border:1px solid var(--panel-line);
+    padding:7px 12px;border-radius:999px;
+  }
+  .chip b{color:var(--mint);font-weight:700}
+  .banner{
+    display:flex;gap:12px;align-items:flex-start;
+    margin-top:22px;padding:13px 16px;border-radius:12px;
+    background:linear-gradient(90deg,rgba(255,59,87,.16),rgba(255,59,87,.04));
+    border:1px solid rgba(255,59,87,.4);
+  }
+  .banner .ic{flex:none;font-size:18px;line-height:1.4}
+  .banner p{font-size:13.5px;color:var(--cream)}
+  .banner b{color:var(--coral-soft)}
+
+  /* ---------- Layout ---------- */
+  .stage{display:grid;grid-template-columns:minmax(300px,420px) 1fr;gap:26px;margin-top:30px;align-items:start}
+  @media (max-width:820px){.stage{grid-template-columns:1fr;gap:18px}}
+
+  /* ---------- Building ---------- */
+  .building-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .building-head h2{font-size:14px;letter-spacing:.16em;color:var(--muted);font-weight:700;text-transform:uppercase}
+  .building-head span{font-size:12px;color:var(--muted)}
+  .tower{
+    background:var(--ink-2);border:1px solid var(--panel-line);
+    border-radius:var(--radius);overflow:hidden;
+    box-shadow:0 24px 60px -30px rgba(0,0,0,.9);
+  }
+  .floor{
+    display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:12px;
+    width:100%;text-align:left;cursor:pointer;
+    background:transparent;border:0;border-bottom:1px solid var(--panel-line);
+    color:var(--cream);padding:13px 15px 13px 0;
+    font-family:inherit;transition:background .18s ease;position:relative;
+  }
+  .floor:last-child{border-bottom:0}
+  .floor:hover,.floor:focus-visible{background:linear-gradient(90deg,rgba(255,59,87,.14),transparent)}
+  .floor:focus-visible{outline:2px solid var(--coral);outline-offset:-2px}
+  .floor.active{background:linear-gradient(90deg,rgba(255,59,87,.22),transparent)}
+  .floor.active::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--coral)}
+  .fbadge{
+    justify-self:center;min-width:44px;text-align:center;
+    font-family:"Archivo",sans-serif;font-weight:900;font-size:20px;
+    color:var(--cream);
+  }
+  .floor.active .fbadge{color:var(--coral-soft)}
+  .fbadge small{display:block;font-family:"Noto Sans KR";font-weight:700;font-size:9px;color:var(--muted);letter-spacing:.08em;margin-top:2px}
+  .ftitle{font-weight:700;font-size:15px}
+  .ftags{font-size:12px;color:var(--muted);margin-top:1px}
+  .fhot{
+    justify-self:end;margin-right:4px;font-size:10px;font-weight:900;letter-spacing:.05em;
+    color:var(--ink);background:var(--gold);padding:3px 8px;border-radius:999px;white-space:nowrap;
+  }
+  .fhot.eat{background:var(--mint)}
+  .divider{
+    font-size:10.5px;letter-spacing:.2em;color:var(--muted);font-weight:700;
+    padding:9px 15px;background:var(--ink);border-bottom:1px solid var(--panel-line);text-transform:uppercase;
+  }
+
+  /* ---------- Detail panel ---------- */
+  .detail{
+    background:var(--panel);border:1px solid var(--panel-line);
+    border-radius:var(--radius);padding:26px 26px 30px;min-height:440px;
+    position:sticky;top:20px;
+  }
+  @media (max-width:820px){.detail{position:static;min-height:0}}
+  .d-floor{
+    display:inline-block;font-family:"Archivo";font-weight:900;font-size:13px;
+    letter-spacing:.05em;color:var(--ink);background:var(--coral);
+    padding:5px 12px;border-radius:8px;margin-bottom:14px;
+  }
+  .d-title{font-family:"Archivo","Noto Sans KR";font-weight:900;font-size:26px;line-height:1.12}
+  .d-sub{color:var(--muted);font-size:14px;margin-top:8px}
+  .d-section{margin-top:22px}
+  .d-section h3{
+    font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--coral-soft);
+    font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;
+  }
+  .d-section h3::after{content:"";flex:1;height:1px;background:var(--panel-line)}
+  .item{
+    display:flex;gap:12px;padding:11px 0;border-bottom:1px dashed var(--panel-line);
+  }
+  .item:last-child{border-bottom:0}
+  .item .nm{font-weight:700;font-size:14.5px}
+  .item .nm .jp{font-family:"Noto Sans JP";font-weight:400;font-size:12px;color:var(--muted);margin-left:6px}
+  .item .ds{font-size:13px;color:var(--muted);margin-top:2px}
+  .item.pick{position:relative}
+  .pill{flex:none;font-size:10px;font-weight:900;height:20px;padding:0 9px;border-radius:999px;
+    display:inline-flex;align-items:center;letter-spacing:.04em}
+  .pill.hot{background:var(--gold);color:var(--ink)}
+  .pill.eat{background:var(--mint);color:var(--ink)}
+  .pill.buy{background:rgba(255,255,255,.1);color:var(--cream);border:1px solid var(--panel-line)}
+  .tipbox{
+    margin-top:22px;padding:14px 16px;border-radius:12px;
+    background:rgba(75,224,192,.08);border:1px solid rgba(75,224,192,.3);
+    font-size:13px;color:var(--cream);
+  }
+  .tipbox b{color:var(--mint)}
+  .empty{color:var(--muted);font-size:14px;padding-top:8px}
+
+  /* ---------- Footer note ---------- */
+  .note{
+    margin-top:30px;padding:20px 22px;border-radius:var(--radius);
+    background:var(--ink-2);border:1px solid var(--panel-line);
+  }
+  .note h3{font-size:13px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+  .note p{font-size:13.5px;color:var(--muted)}
+  .note a{color:var(--coral-soft);text-decoration:none;border-bottom:1px solid rgba(255,109,129,.4)}
+  .note a:hover{color:var(--cream)}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.7}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="returnbar" id="returnbar" href="index.html?tab=guide">
+  <span class="rb-back"><span class="rb-arrow">←</span> 여행 대시보드</span>
+  <span class="rb-zone">🛍️ 파르코 텐진 가이드</span>
+</a>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">후쿠오카 · 텐진</span>
+    <h1>파르코 텐진 층별 가이드
+      <span class="jp">福岡PARCO — FLOOR GUIDE FOR TRAVELERS</span>
+    </h1>
+    <p class="lede">한국인 여행자 입맛으로 정리한 후쿠오카 파르코. 왼쪽 건물에서 <b style="color:var(--cream)">층을 누르면</b> 그 층에 뭐가 있고, 뭘 사야 하는지 바로 볼 수 있어요.</p>
+    <div class="meta-row">
+      <span class="chip">🕙 영업 <b>10:00–20:30</b></span>
+      <span class="chip">🚇 텐진역 7번 출구 <b>직결</b></span>
+      <span class="chip">🍽 식당가 <b>~밤 23:00</b></span>
+      <span class="chip">🏢 본관 + 신관 <b>2개 동</b></span>
+    </div>
+    <div class="banner">
+      <span class="ic">⚠️</span>
+      <p><b>2027년 2월 말 영업 종료 예정</b> — 건물 노후화로 폐점이 결정됐어요. 지금은 정상 영업 중이니, 가신다면 오히려 마지막으로 즐길 수 있는 시기입니다.</p>
+    </div>
+  </header>
+
+  <div class="stage">
+    <!-- BUILDING -->
+    <div>
+      <div class="building-head">
+        <h2>Tap a floor</h2>
+        <span>위 → 아래 (8F → B2F)</span>
+      </div>
+      <div class="tower" id="tower"></div>
+      <p style="font-size:11.5px;color:var(--muted);margin-top:10px">★ <span style="color:var(--gold)">HOT</span> = 인기 쇼핑템 · <span style="color:var(--mint)">EAT</span> = 먹거리 층</p>
+    </div>
+
+    <!-- DETAIL -->
+    <div class="detail" id="detail" aria-live="polite">
+      <span class="d-floor">여기를 눌러보세요</span>
+      <div class="d-title">층을 선택하면<br>정보가 나타나요</div>
+      <p class="d-sub">왼쪽 건물에서 원하는 층을 탭하면 매장·핫템·꿀팁이 이곳에 표시됩니다.</p>
+      <div class="tipbox">💡 <b>추천 동선</b> — 8F 캐릭터 파크에서 시작해 7F를 훑고, 내려오면서 B1F 먹거리·기념품에서 마무리하면 효율적이에요.</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <h3>이벤트 · 팝업 정보</h3>
+    <p>파르코의 팝업·전시는 자주 바뀌며 주로 <b style="color:var(--cream)">5F PARCO FACTORY</b>와 <b style="color:var(--cream)">신관 B2F 이벤트홀</b>에서 열립니다(캐릭터 팝업, 애니 콜라보, 카페 등). 방문일 기준 실시간 일정은
+      <a href="https://ko.fukuoka.parco.jp/event/" target="_blank" rel="noopener">공식 이벤트 페이지</a> 또는 인스타그램 <a href="https://www.instagram.com/parco_fukuoka_official/" target="_blank" rel="noopener">@parco_fukuoka_official</a>에서 확인하세요.</p>
+  </div>
+
+  <p class="foot">
+    ※ 매장·이벤트 구성은 수시로 바뀝니다. 방문 전 공식 사이트로 최종 확인을 권장합니다.<br>
+    지브리(동구리 공화국)·포켓몬센터·점프샵은 파르코가 아닌 <b style="color:var(--muted)">캐널시티 / 하카타 아뮤플라자</b>에 있어요.
+  </p>
+</div>
+
+<script>
+const FLOORS = [
+  {
+    id:"8F", label:"본관", title:"8F", cat:"캐릭터 파크 & 애니메이트", tags:"치이카와·산리오·리락쿠마·스누피",
+    hot:"HOT", hotType:"buy",
+    heading:"캐릭터 천국", jp:"天神キャラパーク / アニメイト",
+    sub:"파르코의 하이라이트. 한국인이 가장 많이 찾는 층이에요. 인기 치이카와템은 개점런(오픈런)이 유리합니다.",
+    groups:[
+      {h:"꼭 들를 곳", items:[
+        {pill:"hot", nm:"키디랜드 · 치이카와랜드", jp:"ちいかわらんど", ds:"파르코 8F 최고 인기. 치이카와 굿즈 종류가 가장 많아요. 산리오·커비·세일러문 코너도 함께."},
+        {pill:"buy", nm:"리락쿠마 스토어", jp:"リラックマストア", ds:"곰돌이 리락쿠마 인형·잡화 전문."},
+        {pill:"buy", nm:"스누피 타운 샵", jp:"スヌーピータウン", ds:"스누피·피너츠 한정 굿즈."},
+        {pill:"buy", nm:"애니메이트 후쿠오카 텐진", jp:"アニメイト", ds:"만화·피규어·애니 굿즈의 성지. 신상이 먼저 풀리는 편."},
+      ]},
+      {h:"이런 것도", items:[
+        {pill:"buy", nm:"미피 · 스미코구라시 · 피카츄 코너", ds:"인형·문구·식기류까지 캐릭터별 다양."},
+        {pill:"buy", nm:"타워레코드 (솔라리아 증축부 6F 연결)", jp:"TOWER RECORDS", ds:"음반 + 아티스트 굿즈. 통로로 연결돼요."},
+      ]},
+    ],
+    tip:"인기템은 금방 품절돼요. 특정 치이카와 상품을 노린다면 <b>오픈 시간(10:00)에 맞춰</b> 방문하세요."
+  },
+  {
+    id:"7F", label:"본관", title:"7F", cat:"캐릭터 · 서브컬처", tags:"원피스·짱구·빌리지뱅가드",
+    hot:"HOT", hotType:"buy",
+    heading:"애니 공식샵 존", jp:"キャラクター / サブカルチャー",
+    sub:"8F와 함께 묶어서 도는 굿즈 층. 유명 작품 공식 스토어가 모여 있어요.",
+    groups:[
+      {h:"공식 스토어", items:[
+        {pill:"hot", nm:"원피스 무기와라 스토어", jp:"麦わらストア", ds:"입구부터 루피·쵸파 조형물. 원피스 공식 굿즈."},
+        {pill:"buy", nm:"크레용 신짱(짱구) 공식샵", jp:"アクションデパート", ds:"짱구 팬이라면 필수. 한정 굿즈 다수."},
+        {pill:"buy", nm:"빌리지 뱅가드", jp:"ヴィレッジヴァンガード", ds:"기발한 잡화·서브컬처 굿즈. 구경만 해도 재밌어요. 팝업도 자주 열림."},
+      ]},
+    ],
+    tip:"7F·8F는 세트로 도는 게 국룰. 두 층을 붙여서 보면 캐릭터 쇼핑이 한 번에 끝나요."
+  },
+  {
+    id:"5F", label:"본관", title:"5F", cat:"인테리어 잡화 & 이벤트", tags:"프랑프랑·러쉬·PARCO FACTORY",
+    hot:null,
+    heading:"잡화 & 팝업 이벤트", jp:"インテリア / EVENT",
+    sub:"감성 잡화와 파르코의 대표 이벤트 공간이 있는 층.",
+    groups:[
+      {h:"쇼핑", items:[
+        {pill:"buy", nm:"프랑프랑", jp:"Francfranc", ds:"인테리어·주방 잡화. 선물용 소품 인기."},
+        {pill:"buy", nm:"러쉬", jp:"LUSH", ds:"입욕제·핸드메이드 코스메."},
+      ]},
+      {h:"이벤트", items:[
+        {pill:"buy", nm:"PARCO FACTORY", ds:"전시·팝업 상설 공간. 캐릭터/애니 콜라보 전시가 자주 열려요. 방문일 일정은 공식 이벤트 페이지 확인."},
+      ]},
+    ],
+    tip:"관심 있는 전시·팝업이 있는지 <b>방문 전 공식 이벤트 페이지</b>를 확인하면 좋아요. 한정 굿즈가 나오기도 합니다."
+  },
+  {
+    id:"3F", label:"본관", title:"3F", cat:"잡화 · 스포츠", tags:"오니츠카타이거·라이프스타일 잡화",
+    hot:null,
+    heading:"잡화 & 스니커즈", jp:"雑貨 / スポーツ",
+    sub:"라이프스타일 잡화와 스포츠 브랜드 위주.",
+    groups:[
+      {h:"쇼핑", items:[
+        {pill:"buy", nm:"오니츠카 타이거", jp:"Onitsuka Tiger", ds:"일본 감성 스니커즈. 한국보다 모델·컬러 폭이 넓은 편."},
+        {pill:"buy", nm:"라이프스타일 · 잡화 편집숍", ds:"문구·가방·소품 등 다양."},
+      ]},
+    ],
+    tip:"오니츠카타이거는 한국인 인기 픽. 면세 대상 여부는 매장에서 여권으로 확인하세요."
+  },
+  {
+    id:"1F", label:"본관 · 신관", title:"1–6F", cat:"패션 · 뷰티 · 카페", tags:"GU·코스메·편집숍·스타벅스(신관)",
+    hot:null,
+    heading:"패션 · 뷰티 층", jp:"FASHION / BEAUTY",
+    sub:"본관·신관에 걸친 의류·화장품·편집숍 구간(1F~6F). 쇼핑보다 캐릭터·먹거리를 노린다면 가볍게 지나가도 OK.",
+    groups:[
+      {h:"둘러보기", items:[
+        {pill:"buy", nm:"GU · 패션 편집숍", ds:"일본 캐주얼·트렌드 의류."},
+        {pill:"buy", nm:"코스메 · 뷰티 매장", ds:"일본 드럭스토어/브랜드 화장품."},
+        {pill:"eat", nm:"스타벅스 (신관 4F)", jp:"STARBUCKS", ds:"쇼핑 중 쉬어가기 좋은 카페. 1F엔 illy 에스프레소바."},
+      ]},
+    ],
+    tip:"이 구간은 취향에 따라 선택. 캐릭터(7·8F)와 먹거리(B1F) 사이 이동 통로로 생각하면 편해요."
+  },
+  {
+    id:"B1F", label:"본관", title:"B1F", cat:"먹거리 · 디저트 · 기념품", tags:"THE 天神·지이치로·디즈니·식당가",
+    hot:"EAT", hotType:"eat",
+    heading:"먹거리 & 기념품", jp:"グルメ / お土産",
+    sub:"한국인 필수 코스. 규슈 기념품과 디저트, 든든한 식당가가 모여 있어요. 식당가는 밤 23:00까지.",
+    groups:[
+      {h:"기념품 · 디저트 (핫템)", items:[
+        {pill:"hot", nm:"THE 天神", jp:"ザ・テンジン", ds:"규슈 특산·한정 기념품 안테나숍. 치도리만주(千鳥饅頭), 치로리안 쿠키(チロリアン), 화제의 우동풍 구미, 파르코 한정품까지. 전통 만주·화과자류도 여기서."},
+        {pill:"hot", nm:"지이치로", jp:"治一郎", ds:"촉촉한 바움쿠헨 명물. 선물용으로 인기. 롤케이크도 추천."},
+        {pill:"eat", nm:"스위츠 파라다이스", jp:"スイーツパラダイス", ds:"케이크·디저트 뷔페. 달달구리 무한 흡입."},
+        {pill:"buy", nm:"디즈니 스토어", jp:"Disney Store", ds:"디즈니 공식 굿즈."},
+        {pill:"eat", nm:"고베야 브레즈", jp:"神戸屋ブレッズ", ds:"아침 일찍 여는 베이커리."},
+      ]},
+      {h:"식당가 (~23:00)", items:[
+        {pill:"eat", nm:"키와미야 함바그", jp:"極味や", ds:"돌판에 구워 먹는 인기 햄버그. 웨이팅 잦음."},
+        {pill:"eat", nm:"텐진 호르몬 · 모츠나베", jp:"天神ホルモン", ds:"철판 호르몬구이·후쿠오카 명물 모츠나베."},
+        {pill:"eat", nm:"라멘 · 식당", ds:"ShinShin 등 하카타 라멘, 이토시마 식당 등."},
+      ]},
+    ],
+    tip:"모찌·다이후쿠 전문점을 콕 찾는다면 파르코보다 <b>캐널시티/백화점 지하 식품관</b>이 강해요. 대신 전통 만주·화과자는 <b>THE 天神</b>에서 해결됩니다."
+  },
+  {
+    id:"B2F", label:"신관", title:"B2F", cat:"레스토랑 · 이벤트홀", tags:"모토무라 규카츠·이벤트홀",
+    hot:"EAT", hotType:"eat",
+    heading:"신관 식당가 & 이벤트홀", jp:"新館 レストラン / EVENT",
+    sub:"신관 지하의 식당가와 대형 이벤트홀. 식당가는 밤 22:00까지.",
+    groups:[
+      {h:"먹거리", items:[
+        {pill:"eat", nm:"모토무라 규카츠", jp:"本村 牛かつ", ds:"겉만 살짝 튀긴 규카츠(소고기 커틀릿)를 돌판에 취향껏 구워 먹어요. 인기 맛집."},
+        {pill:"eat", nm:"기타 레스토랑", ds:"일식·양식 등 다양한 식당."},
+      ]},
+      {h:"이벤트", items:[
+        {pill:"buy", nm:"신관 B2F 이벤트홀", ds:"대형 캐릭터/아티스트 팝업·전시가 열리는 공간. 일정은 공식 이벤트 페이지 확인."},
+      ]},
+    ],
+    tip:"규카츠는 점심·저녁 피크에 줄이 길어요. 오픈 직후나 애매한 시간대를 노리면 웨이팅이 짧습니다."
+  },
+];
+
+const tower = document.getElementById("tower");
+const detail = document.getElementById("detail");
+
+// build rows with a divider between above-ground and basement
+FLOORS.forEach((f, i) => {
+  if(f.id === "B1F"){
+    const d = document.createElement("div");
+    d.className = "divider";
+    d.textContent = "▽ 지하 · 먹거리 & 이벤트";
+    tower.appendChild(d);
+  }
+  const btn = document.createElement("button");
+  btn.className = "floor";
+  btn.setAttribute("aria-label", f.title + " " + f.cat);
+  btn.innerHTML = `
+    <span class="fbadge">${f.title}<small>${f.label}</small></span>
+    <span>
+      <span class="ftitle">${f.cat}</span>
+      <span class="ftags">${f.tags}</span>
+    </span>
+    ${f.hot ? `<span class="fhot ${f.hotType==='eat'?'eat':''}">${f.hot}</span>` : `<span></span>`}
+  `;
+  btn.addEventListener("click", () => select(i));
+  tower.appendChild(btn);
+});
+
+function select(i){
+  const f = FLOORS[i];
+  document.querySelectorAll(".floor").forEach((el,idx)=>el.classList.toggle("active", idx===i));
+  let html = `
+    <span class="d-floor">${f.title} · ${f.label}</span>
+    <div class="d-title">${f.heading}</div>
+    <div class="d-sub" style="font-family:'Noto Sans JP';font-size:12px;letter-spacing:.1em;color:var(--muted);margin-top:4px">${f.jp}</div>
+    <p class="d-sub">${f.sub}</p>
+  `;
+  f.groups.forEach(g=>{
+    html += `<div class="d-section"><h3>${g.h}</h3>`;
+    g.items.forEach(it=>{
+      html += `
+        <div class="item pick">
+          <span class="pill ${it.pill}">${it.pill==='hot'?'HOT':it.pill==='eat'?'EAT':'SHOP'}</span>
+          <span>
+            <span class="nm">${it.nm}${it.jp?`<span class="jp">${it.jp}</span>`:''}</span>
+            <span class="ds">${it.ds}</span>
+          </span>
+        </div>`;
+    });
+    html += `</div>`;
+  });
+  html += `<div class="tipbox">💡 <b>꿀팁</b> — ${f.tip}</div>`;
+  detail.innerHTML = html;
+  if(window.matchMedia("(max-width:820px)").matches){
+    detail.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+}
+
+// preselect the star floor (8F) on load
+select(0);
+
+// 허브 복귀 링크: 떠나온 탭(?from)으로 정확히 돌아가기
+(function(){const from=new URLSearchParams(location.search).get('from')||'guide';
+  const rb=document.getElementById('returnbar');if(rb)rb.href='index.html?tab='+from;})();
+</script>
+</body>
+</html>

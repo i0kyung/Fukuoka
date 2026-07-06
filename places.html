@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A0F0D">
+<title>장소별 상세 가이드 · 후쿠오카</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<style>
+:root{--bg:#0A0F0D;--card:#14201B;--card2:#1B2A24;--jade:#12B981;--jade-soft:#34D399;--jade-deep:#0F6E56;--text:#F2F7F5;--sub:#8AA79C;--line:#243A32;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg)}
+body{font-family:'Pretendard Variable','Pretendard',system-ui,sans-serif;color:var(--text);letter-spacing:-.01em;line-height:1.5;
+  max-width:480px;margin:0 auto;padding-bottom:40px;min-height:100vh}
+.jp{font-family:'Noto Sans JP',sans-serif}
+.press{transition:transform .12s ease}
+.press:active{transform:scale(.97)}
+/* 리턴바 */
+.returnbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  height:44px;padding:0 16px;background:var(--jade-deep);color:#fff;text-decoration:none;transition:opacity .15s ease}
+.returnbar:active{opacity:.85}
+.rb-back{display:flex;align-items:center;gap:6px;font-size:14.5px;font-weight:800}
+.rb-arrow{font-size:17px;line-height:1}
+.rb-zone{font-size:12.5px;font-weight:800;opacity:.92}
+/* 헤더 */
+header{position:sticky;top:44px;z-index:40;background:rgba(10,15,13,.9);backdrop-filter:blur(12px);padding:18px 18px 10px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.h-sub{font-size:13px;color:var(--sub);margin-top:3px;font-weight:600}
+/* 칩 */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 6px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:9px 15px;border-radius:99px;font-size:13.5px;font-weight:800;white-space:nowrap;
+  background:var(--card);color:var(--sub);border:1px solid var(--line);cursor:pointer;transition:transform .12s,background .2s,color .2s}
+.chip small{font-weight:600;font-size:10.5px;opacity:.8;margin-left:4px}
+.chip.on{background:var(--jade);color:#04241A;border-color:var(--jade)}
+.chip:active{transform:scale(.94)}
+/* 그룹 */
+main{padding:6px 16px 0}
+.group{display:none}
+.group.show{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.g-head{font-size:14px;font-weight:800;color:var(--jade-soft);margin:14px 4px 10px;letter-spacing:.2px}
+/* 카드 아코디언 */
+.card{background:var(--card);border-radius:18px;border:1px solid var(--line);margin-bottom:11px;overflow:hidden}
+.acc-head{width:100%;text-align:left;background:none;border:none;color:var(--text);cursor:pointer;
+  display:flex;align-items:flex-start;gap:10px;padding:15px 16px;font-family:inherit}
+.ah-main{flex:1;min-width:0}
+.ah-title{font-size:15.5px;font-weight:800;line-height:1.35;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ah-flag{font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:7px;background:rgba(18,185,129,.16);color:var(--jade-soft)}
+.ah-flag.warn{background:rgba(239,124,27,.16);color:#F0A868}
+.ah-flag.info{background:rgba(138,167,156,.16);color:var(--sub)}
+.ah-sub{font-size:12.5px;color:var(--sub);margin-top:3px;font-weight:600}
+.arrow{color:var(--sub);font-size:13px;margin-top:3px;transition:transform .3s ease;flex:0 0 auto}
+.acc.open .arrow{transform:rotate(180deg);color:var(--jade)}
+.t-detail-wrap{max-height:0;overflow:hidden;transition:max-height .34s ease}
+.acc.open .t-detail-wrap{max-height:3000px}
+.acc-body{padding:0 16px 16px;font-size:13.5px;line-height:1.62}
+.b-sec{font-size:11.5px;font-weight:800;color:var(--jade-soft);margin:12px 0 5px;letter-spacing:.3px}
+.b-sec:first-child{margin-top:2px}
+.acc-body p{margin:4px 0}
+.acc-body b{color:var(--text);font-weight:800}
+.acc-body .jp{color:var(--jade-soft)}
+ul.b-list{list-style:none;margin:4px 0}
+ul.b-list li{position:relative;padding-left:14px;margin:5px 0;color:#D7E5DF}
+ul.b-list li::before{content:'·';position:absolute;left:2px;color:var(--jade);font-weight:900}
+.callout{border-radius:12px;padding:11px 13px;margin:11px 0;font-size:13px;line-height:1.6}
+.callout.jade{background:rgba(18,185,129,.1);border:1px solid rgba(18,185,129,.28)}
+.callout.jade .ct{color:var(--jade-soft);font-weight:800;font-size:12px;margin-bottom:3px}
+.callout.warn{background:rgba(239,124,27,.1);border:1px solid rgba(239,124,27,.3)}
+.callout.warn .ct{color:#F0A868;font-weight:800;font-size:12px;margin-bottom:3px}
+.mapbtn{display:inline-flex;align-items:center;gap:5px;margin-top:12px;padding:9px 14px;border-radius:12px;
+  background:var(--jade);color:#04241A;font-weight:800;font-size:13px;text-decoration:none}
+.foot{font-size:11px;color:var(--sub);text-align:center;line-height:1.7;padding:20px 20px 8px}
+</style>
+</head>
+<body>
+<a class="returnbar" id="returnbar" href="index.html?tab=guide">
+  <span class="rb-back"><span class="rb-arrow">←</span> 여행 대시보드</span>
+  <span class="rb-zone">📍 장소별 가이드</span>
+</a>
+<header>
+  <h1>장소별 상세 가이드</h1>
+  <div class="h-sub">각 장소를 <b style="color:var(--text)">어떤 곳 · 리뷰 · 꼭 살 것 · 실전 팁</b>으로 · 칩으로 날짜 이동</div>
+</header>
+<div class="chips" id="chips"></div>
+<main id="groups"></main>
+<p class="foot">리뷰·정보는 공개 자료를 종합 요약한 것으로, 영업시간·가격·재고·상호는 방문 전 최신 정보로 다시 확인하세요.</p>
+
+<script>
+const G = [
+ { id:'tips', label:'공통팁', date:'🧭 먼저 읽기 · 여행 공통 팁', places:[
+   { emoji:'🧭', name:'출발 전 공통 체크', sub:'면세·웨이팅·결제·날씨', body:`
+     <div class="b-sec">면세</div><p>한 매장에서 세금 포함 <b>5,500엔↑</b> 구매 시 소비세 10% 환급 → <b>여권 실물</b> 필수. 돈키호테·드럭스토어는 카카오톡 쿠폰으로 추가 할인.</p>
+     <div class="b-sec">웨이팅</div><p>인기 맛집(야키니쿠·스시)은 저녁 1~2시간 대기도 흔함 → 구글맵/타베로그로 미리 예약 추천.</p>
+     <div class="b-sec">결제</div><p>대부분 카드/트래블월렛 가능하나 노포·야타이는 <b>현금 위주</b> → 비상용 현금 준비.</p>
+     <div class="b-sec">날씨</div><p>7월은 덥고 비 가능 → 이 일정은 실내 스팟이 많아 우천에도 무난.</p>` },
+ ]},
+ { id:1, label:'Day 1', date:'7/7 (화) · 하카타 입성 & 미노시마 정착', places:[
+   { emoji:'⚡', name:'포켓몬 센터 후쿠오카', flag:'에몽가 필독', sub:'하카타 마루이 2F · 도보 2~3분 · 10:00~21:00', q:'ポケモンセンターフクオカ 博多マルイ', body:`
+     <div class="b-sec">어떤 곳</div><p>규슈 유일 포켓몬 공식샵. 2025년 하카타 마루이 2층에 리뉴얼 오픈, <b>2,500종 이상</b> 굿즈. 하카타역 도보 2~3분, 예약 불필요.</p>
+     <div class="b-sec">리뷰 요약</div><p>한국에서 못 구하는 한정품이 많아 인기. 여유롭게 보려면 <b>평일</b>이 한산. 중앙에 이벤트 공간·카드 스테이션·게임기.</p>
+     <div class="b-sec">포토 스팟</div><p>입구 피카츄 + 전설의 <b>라티아스·라티오스</b>(가까이 가면 바람 연출), 라멘집 주인 복장 '후쿠오카 피카츄'.</p>
+     <div class="b-sec">꼭 볼 것 (후쿠오카 한정)</div>
+     <ul class="b-list"><li>니와카멘 얹은 봉제 피카츄 (약 2,750엔)</li><li>돈코츠 라멘집 콜라보 라멘 세트 (약 972엔)</li><li>하카타오리 콜라보 파우치(6,050엔)/텀블러(3,850엔)</li><li>멘베이 콜라보 (약 777엔) — 선물용</li></ul>
+     <div class="callout jade"><div class="ct">🐿️ 에몽가(에몰가) 노트</div>전국도감 <b>587번</b>, 인형 라인 <b>"Sitting Cuties"(Pokémon fit)</b>에 정식 포함 → 만날 확률 높음. 안 보이면 점원에게 <b class="jp">「エモンガ、ありますか?」</b>(에몽가 아리마스카?). 메탈참(587) 같은 소품도 있어요.</div>
+     <p style="color:var(--sub)">팁 · 면세 5,500엔↑ + 여권. 층 이동은 마루이 백화점 엘리베이터/에스컬레이터.</p>` },
+   { emoji:'🍖', name:'하카타 하라미타스', sub:'츄오가이빌딩 6F · 하카타역 도보 2분', q:'博多ハラミタス', body:`
+     <div class="b-sec">어떤 곳</div><p>사가규(和牛) 중심 야키니쿠. 소고기 <b>무한리필 코스</b>가 대표.</p>
+     <div class="b-sec">리뷰 / 메뉴</div><p>무한리필 '요리만' 약 <b>4,000엔</b>(세금 포함·11종): 우설·수제 김치·명물 <b>하라미(치마살)</b>·A5 사가규·갈비·모둠 호르몬·미역국, 흰쌀밥 무한. <b>2시간제</b>. 흡연 가능석 있어 좌석 참고.</p>
+     <p style="color:var(--sub)">팁 · 첫날 저녁 러시 → <b>예약 권장</b>. 포켓몬센터 도보 2분.</p>` },
+   { emoji:'🛒', name:'사니(Sunny) 미노시마점', sub:'마트 · 숙소 도보 3분 · ~24:00', q:'サニー美野島店', body:`
+     <div class="b-sec">어떤 곳</div><p>동네 대형 슈퍼. 물·맥주·간식·즉석식품 장보기 좋아요.</p>
+     <div class="b-sec">사면 좋은 것</div><p>명란(멘타이코), 현지 캔맥주(아사히 생맥주 캔), 냉장 디저트·푸딩, 컵라면, 제철 과일. 봉투 유료 <b class="jp">「袋ください」</b>(후쿠로 쿠다사이).</p>` },
+ ]},
+ { id:2, label:'Day 2', date:'7/8 (수) · 오호리 공원 & 시사이드 모모치', places:[
+   { emoji:'🦆', name:'오호리 공원', sub:'무료 · 24시간 · 공항선 오호리코엔역', q:'大濠公園', body:`
+     <div class="b-sec">어떤 곳</div><p>후쿠오카의 '센트럴 파크'. 큰 호수를 낀 산책·보트·카페 힐링. 무료, 24시간, 지하철 <b>오호리코엔역</b> 하차.</p>
+     <div class="b-sec">추천</div><p>호수 주변 산책 + 카페. 옆에 <b>후쿠오카시 미술관</b>·후쿠오카성터(마이즈루 공원) → 비 오면 미술관으로 실내 대체.</p>` },
+   { emoji:'⚾', name:'미즈호 페이페이 돔', sub:'외관 무료 · 내부는 예약 돔투어', q:'みずほPayPayドーム', body:`
+     <div class="b-sec">어떤 곳</div><p>소프트뱅크 호크스 홈 돔구장. 외관 무료, 내부는 <b>돔 투어</b> 예약제.</p>
+     <div class="b-sec">주변</div><p>직결 대형몰 <b>MARK IS 후쿠오카 모모치</b>(160여 점포), 힐튼 씨호크. 타워로 이어지는 해변길 산책 굿.</p>` },
+   { emoji:'🗼', name:'후쿠오카 타워', sub:'전망대 약 800엔 · 09:30~22:00', q:'福岡タワー', body:`
+     <div class="b-sec">어떤 곳</div><p>234m, 일본 해변 타워 최고 높이. 지상 123m 전망대에서 시내·하카타만 360도 조망(야경 100선).</p>
+     <div class="b-sec">리뷰 / 요금</div><p>전망대 약 <b>800엔</b>, 09:30~22:00. <b>일몰~야경</b>이 베스트라 5:30경부터 포토 스팟 줄. 1~3층 AR·체험 게임, 계절별 조명. 아래 <b>마리존</b>·시사이드 모모치 인공해변 산책 세트.</p>
+     <p style="color:var(--sub)">팁 · 미리 예매하면 저렴한데 현장에서 <b>종이 QR</b> 필요할 수 있으니 예매처 안내 확인.</p>` },
+ ]},
+ { id:3, label:'Day 3', date:'7/9 (목) · 다자이후 & 텐진 실내 피서', places:[
+   { emoji:'⛩️', name:'다자이후 텐만구', sub:'참배 무료 · 06:30~19:00 · 니시테츠 다자이후역', q:'太宰府天満宮', body:`
+     <div class="b-sec">어떤 곳</div><p>학문의 신 스가와라노 미치자네를 모신 <b>전국 텐만구의 총본궁</b>, 1100년 이상 역사. 참배 무료.</p>
+     <div class="b-sec">볼거리</div><p>'어신우'(소 동상) 머리 만지면 좋다는 속설, 6,000그루 매화. 전철 왕복 약 1,000엔.</p>
+     <div class="callout jade"><div class="ct">🍡 꼭 먹을 것 — 우메가에모찌</div>참배길 명물 팥떡. 겉 바삭·속 쫀득. 마츠야 등에서 <b>갓 구운 것</b> 추천. 호불호 있어 하나 나눠 먹기 좋아요.</div>
+     <div class="callout jade"><div class="ct">☕ 꼭 들를 곳 — 스타벅스 오모테산도점</div>건축가 <b>쿠마 겐고</b>가 삼나무 약 2,000개를 못 없이 짜 맞춘 규슈 유일 컨셉 스토어. 인생샷 + 일본 한정 시즌 메뉴. 도리이 옆 도보 2~3분. 옆 <b>규슈국립박물관</b>도 실내 대체 코스.</div>` },
+   { emoji:'🛍️', name:'텐진 파르코 · 텐진 지하상가', flag:'실내 피서 핵심', sub:'파르코 10:00~20:30 · 지하상가 직결', q:'福岡PARCO', body:`
+     <div class="b-sec">텐진 파르코</div><p>캐릭터 성지. 7~8층 <b>애니메이트</b>·원피스 무기와라·짱구·키디랜드·스누피·산리오, 인기 폭발 <b>치이카와 랜드</b>(붐빌 땐 정리권/오픈런). B1엔 신신라멘·키와미야 함바그·텐진 호르몬·디즈니 스토어.</p>
+     <div class="b-sec">텐진 지하상가(치카가이)</div><p>약 590m, 150개+ 점포, 유럽풍 인테리어. 산리오·칼디·이모야킨지로. 미쓰코시·다이마루, <b>미나 텐진</b>(규슈 최대 유니클로·GU, 4층 로프트). 솔라리아와 지하 연결 → <b>비·더위 무관</b>.</p>
+     <div class="callout jade"><div class="ct">🔗 층별 상세는?</div>파르코 각 층 매장·핫템·꿀팁은 <b>파르코 전용 가이드</b>에서 층을 눌러 확인하세요. (가이드 탭 → 파르코 텐진 가이드)</div>` },
+   { emoji:'🥩', name:'야키니쿠 히라오', flag:'상호 확인 필요', flagType:'warn', sub:'텐푸라 히라오와 혼동 주의', body:`
+     <div class="callout warn"><div class="ct">⚠️ 참고</div>후쿠오카에서 "히라오"로 가장 유명한 곳은 야키니쿠가 아니라 <b>텐푸라 히라오</b>(가성비 튀김 노포, 텐진 아크로스·다이묘, 갓 튀김+명란 셀프)예요. 대시보드의 '야키니쿠 히라오'는 (a) 텐푸라 히라오를 의도했거나 (b) 별개 소규모 야키니쿠일 수 있어요. <b>방문 전 구글맵/타베로그로 상호·주소 확인</b> 권장.</div>
+     <div class="b-sec">텐진 야키니쿠 대안</div><p>니쿠토사케 주베, 야키니쿠 하치하치(솔라리아점) 등. 인기점은 웨이팅 길어 사전 예약이 안전.</p>` },
+   { emoji:'🌉', name:'나카스 강변 야경 · 야타이', sub:'야타이 대개 18:00~심야 · 현금 기본', q:'中洲 屋台', body:`
+     <div class="b-sec">어떤 곳</div><p>나카강변 야경과 후쿠오카 명물 야타이 거리.</p>
+     <div class="b-sec">팁</div><p><b>현금 기본</b>, 줄 긴 야타이가 맛집 신호(단 너무 오래는 X). 라멘·오뎅·꼬치가 대표. 주인·단골과의 대화도 매력.</p>` },
+   { emoji:'🍜', name:'이치란 본사 총본점', sub:'나카스 · 24시간 · 1인 카운터 원조', q:'一蘭 本社総本店', body:`
+     <div class="b-sec">어떤 곳</div><p>이치란 발상지이자 본사 1층 총본점. <b>1인 집중 카운터</b> 원조. 나카스카와바타역 2번 출구 도보 몇 분.</p>
+     <div class="b-sec">주문법</div><p>주문표에 국물 농도·면 익힘·마늘/파·차슈·<b>비법 붉은 소스 매운맛</b> 선택(10배까지 무료). 한국어 메뉴 있음. <b>5~6단계</b>가 무난(7단계는 꽤 매움). 약 1,000~1,500엔, 웨이팅 30~40분 흔함.</p>
+     <div class="b-sec">특별 포인트</div><p>본점 1층엔 드물게 <b>테이블석</b>도. 후쿠오카 한정 <b>사각 그릇</b>, 국물 다 비우면 바닥에 감사 문구. 기념 인스턴트 라멘 판매.</p>` },
+ ]},
+ { id:4, label:'Day 4', date:'7/10 (금) · 하카타·텐진 기념품 쇼핑', places:[
+   { emoji:'☕', name:'카페 하루모', flag:'정보 제한', flagType:'info', sub:'소규모 브런치 카페(돼지 스테이크)', body:`
+     <div class="callout warn"><div class="ct">ℹ️ 정보 제한</div>공개 리뷰가 적은 <b>소규모 브런치 카페</b>로 보여요. 작아서 오픈런이 안전하고, 정확한 위치·영업시간은 <b>구글맵/타베로그 확인</b> 권장.</div>
+     <p style="color:var(--sub)">참고 · 후쿠오카 '돼지 스테이크'로 유명한 곳은 <b>토이치</b>(세트 약 1,100엔, 밥+샐러드+장국). 대안으로 알아두면 좋아요.</p>` },
+   { emoji:'⛲', name:'캐널시티 하카타', sub:'구시다진자마에역 도보 3분 · 분수쇼', q:'キャナルシティ博多', body:`
+     <div class="b-sec">어떤 곳</div><p>180m 인공 운하를 낀 대형 복합몰(존 저드 설계). 구시다진자마에역 도보 3분, 하카타역 도보 10분.</p>
+     <div class="b-sec">분수쇼</div><p>10:00~22:00 <b>30분마다</b>. 저녁엔 3D 프로젝션 <b>'캐널 아쿠아 파노라마'</b>(시즌별 원피스·에반게리온 테마). 명당은 1층 운하 앞, 영상은 2~3층 난간 중앙. 무료.</p>
+     <div class="b-sec">쇼핑 / 먹거리</div><p>5층 <b>라멘 스타디움</b>, 무지·유니클로(규슈 최대급)·ZARA·H&M, <b>건담베이스 후쿠오카</b>, 지하 원피스/키티/토토로 굿즈, 타이토 스테이션. 면세 5,500엔+.</p>` },
+   { emoji:'🎮', name:'요도바시 카메라 하카타', sub:'09:30~22:00 · 피규어·가챠 성지', q:'ヨドバシカメラ博多', body:`
+     <div class="b-sec">어떤 곳</div><p>하카타역 근처 대형 전자·완구 백화점.</p>
+     <div class="b-sec">볼거리</div><p>카메라·PC·가전 + <b>지하 장난감샵</b>(레고 체험존·포켓몬 피규어·건프라)과 끝없는 <b>가챠 벽</b>. 면세 + 특정 카드 추가할인 가능.</p>` },
+   { emoji:'🍣', name:'스시 사카바 사시스', sub:'킷테(KITTE) 하카타 · 하카타역 직결', q:'すし酒場 さしす 博多', body:`
+     <div class="b-sec">어떤 곳</div><p>가성비 좋은 스시 체인. 하카타역 직결 <b>킷테 하카타</b>에 위치.</p>
+     <div class="b-sec">팁</div><p>인기가 많아 <b>웨이팅</b> 있음. 계획대로 <b>이른 16시</b>에 가면 대기↓.</p>` },
+   { emoji:'🛒', name:'돈키호테 텐진 본점', sub:'대개 24시간 · 만물 잡화점', q:'ドン・キホーテ 天神本店', body:`
+     <div class="b-sec">어떤 곳</div><p>'없는 게 없는' 만물 잡화점, 대개 24시간. 시내 텐진·나카스·하카타역 미나미 3곳.</p>
+     <div class="b-sec">쇼핑리스트 — 상비약</div><p>동전파스·샤론파스(부모님 선물 1위), 카베진, 오타이산, EVE, 휴족시간, 로토 안약.</p>
+     <div class="b-sec">뷰티</div><p>퍼펙트휩/SANA 두유 폼, 하다라보 고쿠쥰, 비오레·멜라노CC 선크림, 니베아 톤업 립밤, 메구리즘 온열 안대.</p>
+     <div class="b-sec">간식 / 식품</div><p>이치란 라멘 키트, 튜브 명란·스프레드, 블렌디 포션, 오리히로 곤약젤리(<b>튜브형만 반입 가능</b>), 코로로, 로이스, 멘베이·히요코 만쥬·도쿄바나나.</p>
+     <div class="callout warn"><div class="ct">⚠️ 면세 제외 주의</div>생초코파이 등 <b>냉장 식품</b>은 면세 대상이 아니에요. 팁 · 면세 5,500엔+ 여권, 카카오톡 '돈키호테' 채널 쿠폰으로 추가 할인.</div>` },
+ ]},
+ { id:5, label:'Day 5', date:'7/11 (토) · 귀국', places:[
+   { emoji:'✈️', name:'귀국일 노트', sub:'이동·수속 위주 · 별도 관광 없음', body:`
+     <ul class="b-list"><li>대부분 이동/수속 구간. 공항 면세점에서 <b>도쿄바나나·프레스 버터 샌드</b> 등 마지막 선물 픽업 정도.</li><li>IC카드는 <b>공항 도착 후</b> 국내선 지하 2층 창구 반납(잔액 0원 털기 → 보증금 전액 환불).</li></ul>` },
+ ]},
+ { id:'deep', label:'심화편', date:'🍜 먹거리 & 교양 심화 가이드', places:[
+   { emoji:'📖', name:"'후쿠오카'와 '하카타' 이야기", sub:'왜 이름이 두 개일까 (교양)', body:`
+     <p>나카강을 경계로 동쪽은 상인의 항구도시 <b>하카타</b>, 서쪽은 무사(구로다 가문)의 성곽도시 <b>후쿠오카</b>. 1889년 합칠 때 시 이름은 '후쿠오카', 새 역·항구 이름은 '하카타'로 <b>타협</b>. 그래서 '후쿠오카 공항'에 내려 '하카타역'으로 가는 구조가 됐어요.</p>
+     <div class="b-sec">기질</div><p>하카타는 '민(民)의 공간' — 거래·실리 중시 상인 기질. 후쿠오카성터·오호리가 '관·질서'라면, 하카타 골목·야타이는 '민·활기'. 이 대비가 도시의 매력.</p>` },
+   { emoji:'🐟', name:'명물 & 식감 포인트', sub:'뭘 주의 깊게 먹을까', body:`
+     <ul class="b-list"><li><b>하카타 돈코츠 라멘</b>(이치란): 진한 사골 국물+가는 면, 면만 추가하는 <b>카에다마</b> 문화.</li><li><b>하카타 우동</b>: '뚝뚝 끊길 만큼 부드러운' 면이 정상. 맑은 국물, 토핑은 <b>고보텐</b>·마루텐·니쿠고보텐, 카시와메시 곁들임.</li><li><b>멘타이코(명란)</b>: 후쿠오카의 얼굴. 노포 '후쿠야'가 대중화 원조.</li><li><b>세이로무시(찜 장어)</b>: 양념밥을 찜통에 쪄 장어를 얹는 폭신·촉촉 식감.</li><li>보너스: 야키라멘·고마사바·모츠나베·미즈타키.</li></ul>` },
+   { emoji:'🍱', name:'장어덮밥, 어디서?', sub:'동선별 추천', body:`
+     <ul class="b-list"><li><b>하카타역</b> — 우나기 도큐(아뮤플라자 9층, 접근성 최고).</li><li><b>나카스</b> — 야나가와야 본점(세이로무시 松 약 3,850엔), 우나기노 에이토(점심만·인스타 DM 예약·식후 푸딩), 요시즈카 우나기야(1873년 노포).</li><li><b>텐진</b> — 우나기겐나이(로컬 장어덮밥).</li></ul>` },
+   { emoji:'🍜', name:'우동, 어디서?', sub:'동선별 추천', body:`
+     <ul class="b-list"><li><b>하카타역/캐널</b> — 다이치노 우동(회오리 고보텐 시그니처), 에비스야(갈비 붓카케), 우동 타이라(니쿠고보텐, 점심 전 추천).</li><li><b>나카스카와바타</b> — 카로노우롱(1882년 노포, '모퉁이 우동집').</li><li>팁 · 로컬 우동집은 자판기·현금 위주.</li></ul>` },
+   { emoji:'🍽️', name:'계획된 맛집 꼭 시킬 메뉴', sub:'주문 가이드', body:`
+     <ul class="b-list"><li><b>이치란</b>: 기본 돈코츠(붉은소스 5~6단계) + 반숙계란 + 말차 아몬드 두부, 사각 그릇 인증.</li><li><b>하라미타스</b>: '요리만'(약 4,000엔) — 하라미·A5 사가규·수제 김치.</li><li><b>히라오</b>(텐푸라라면): 갓 튀긴 튀김 정식 + 셀프 명란. 상호 확인 후 주문.</li><li><b>사시스</b>: 제철 니기리 위주, 16시 방문.</li><li><b>카페 하루모</b>(정보 제한): 돼지 스테이크 브런치. 대안 토이치 세트 약 1,100엔.</li></ul>` },
+   { emoji:'🛒', name:'사니 마트 쇼핑리스트', sub:'숙소 도보 3분 · ~24:00', body:`
+     <div class="b-sec">명란 제품</div><p>튜브 명란, <b>명란 스프레드</b>(약 350엔·명란 토스트), 명란 마요·파스타 소스팩.</p>
+     <div class="b-sec">조미료·소스 (선물 인기)</div><p>계란간장, 큐피 고마 드레싱, 미쯔칸 <b>'간단스'</b>(무+식초=치킨무), 야키니쿠 소스.</p>
+     <div class="b-sec">간편식 · 간식 · 주류</div><p>냉장 라멘·파스타 조리팩, 닛신 컵라면, 이치란 키트 / <b>멘베이</b>·토리몬·히요코·아마오우 초콜릿 / 아사히 <b>생맥주 캔</b>.</p>
+     <div class="callout warn"><div class="ct">⚠️ 주의</div>명란·생초코 등 <b>냉장식품은 유통기한 짧고 면세 제외</b> → 현지 소비/귀국 직전 구매. 곤약젤리는 <b>튜브형만</b> 반입 가능.</div>` },
+   { emoji:'👀', name:'역사·예술·전통 볼거리', flag:'야마카사 겹침', sub:'자투리 시간 강력 추천', q:'櫛田神社 博多', body:`
+     <div class="b-sec">하카타역 도보권 사찰 골목</div>
+     <ul class="b-list"><li><b>조텐지(承天寺)</b> — 1242년. 경내 <b>'우동·소바 발상지' 비석</b>. 하카타오리·기온 야마카사 발상 비석도. 우동 먹기 전후 들르면 의미 두 배.</li><li><b>쇼후쿠지(聖福寺)</b> — 1195년, <b>일본 최초의 선종 사찰</b>.</li></ul>
+     <div class="callout jade"><div class="ct">✨ 쿠시다 신사 — 여행 시기와 겹침!</div>하카타 수호신. 7월 <b>하카타 기온 야마카사</b>(약 7/1~15) 중심지. <b>여행 시기(7/7~11)와 겹쳐</b> 거대 장식 가마 <b>'카자리야마'</b>를 볼 가능성 — 놓치기 아까운 포인트!</div>
+     <div class="b-sec">그 외</div>
+     <ul class="b-list"><li><b>다자이후</b>: 누문·본전(중요문화재), 6,000그루 매화, '날아온 매화' 전설, 어신우 청동상.</li><li><b>후쿠오카 타워·모모치</b>: '사자에상 거리'(약 1.6km), 마리존, 야경 100선.</li><li><b>캐널시티</b>: 존 저드 설계, 저녁 3D 프로젝션 시즌 테마.</li></ul>` },
+ ]},
+];
+
+const MAP = q => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q + ' 福岡');
+
+function render(){
+  const chips = document.getElementById('chips');
+  const groups = document.getElementById('groups');
+  chips.innerHTML = G.map((g,i)=>`<button class="chip${i===1?' on':''}" data-g="${g.id}">${g.label}</button>`).join('');
+  groups.innerHTML = G.map((g,i)=>{
+    const cards = g.places.map(p=>{
+      const flag = p.flag ? `<span class="ah-flag ${p.flagType||''}">${p.flag}</span>` : '';
+      const map = p.q ? `<a class="mapbtn press" href="${MAP(p.q)}" target="_blank" rel="noopener">🗺️ 지도에서 보기</a>` : '';
+      return `<div class="acc card">
+        <button class="acc-head press" onclick="toggleAcc(this)">
+          <div class="ah-main">
+            <div class="ah-title">${p.emoji} ${p.name}${flag}</div>
+            ${p.sub?`<div class="ah-sub">${p.sub}</div>`:''}
+          </div>
+          <span class="arrow">▼</span>
+        </button>
+        <div class="t-detail-wrap"><div class="acc-body">${p.body}${map}</div></div>
+      </div>`;
+    }).join('');
+    return `<div class="group${i===1?' show':''}" data-g="${g.id}">
+      <div class="g-head">${g.date}</div>${cards}</div>`;
+  }).join('');
+}
+function toggleAcc(btn){ btn.parentElement.classList.toggle('open'); }
+document.addEventListener('click', e=>{
+  const c = e.target.closest('.chip'); if(!c) return;
+  const id = c.dataset.g;
+  document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on', x===c));
+  document.querySelectorAll('.group').forEach(x=>x.classList.toggle('show', x.dataset.g===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+render();
+
+/* 허브 복귀 링크: 떠나온 탭(?from)으로 정확히 돌아가기 */
+(function(){const from=new URLSearchParams(location.search).get('from')||'guide';
+  const rb=document.getElementById('returnbar');if(rb)rb.href='index.html?tab='+from;})();
+</script>
+</body>
+</html>
